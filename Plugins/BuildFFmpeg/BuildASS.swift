@@ -26,6 +26,12 @@ class BuildHarfbuzz: BaseBuild {
         super.init(library: .libharfbuzz)
     }
 
+    override func cFlags(platform: PlatformType, arch: ArchType) -> [String] {
+        var cFlags = super.cFlags(platform: platform, arch: arch)
+        cFlags.append("-Wno-cast-function-type-strict")
+        return cFlags
+    }
+
     override func arguments(platform _: PlatformType, arch _: ArchType) -> [String] {
         [
             "-Dglib=disabled",

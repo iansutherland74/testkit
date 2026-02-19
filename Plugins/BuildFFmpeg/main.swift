@@ -147,7 +147,7 @@ enum Library: String, CaseIterable {
     var version: String {
         switch self {
         case .FFmpeg:
-            return "n6.1"
+            return "n8.0.1"
         case .libfreetype:
             return "VER-2-13-2"
         case .libfribidi:
@@ -342,7 +342,7 @@ enum Library: String, CaseIterable {
 class BaseBuild {
     static var platforms = PlatformType.allCases
         .filter {
-            ![.watchos, .watchsimulator, .android].contains($0)
+            ![.watchos, .watchsimulator, .android, .xros, .xrsimulator].contains($0)
         }
 
     static var notRecompile = false
@@ -450,6 +450,7 @@ class BaseBuild {
                 "-DCMAKE_OSX_ARCHITECTURES=\(arch.rawValue)",
                 "-DCMAKE_INSTALL_PREFIX=\(thinDirPath)",
                 "-DBUILD_SHARED_LIBS=0",
+                "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             ]
             arguments.append(contentsOf: self.arguments(platform: platform, arch: arch))
             try Utility.launch(path: cmake, arguments: arguments, currentDirectoryURL: buildURL, environment: environ)

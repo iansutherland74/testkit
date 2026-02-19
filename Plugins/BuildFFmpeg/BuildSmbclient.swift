@@ -184,6 +184,16 @@ class BuildGnutls: BaseBuild {
             Utility.shell("brew install libtasn1")
         }
         super.init(library: .gnutls)
+        // Fix autopoint compatibility with newer gettext: remove duplicate
+        // AM_GNU_GETTEXT_REQUIRE_VERSION that conflicts with AM_GNU_GETTEXT_VERSION.
+        let configureAC = directoryURL + "configure.ac"
+        if let data = FileManager.default.contents(atPath: configureAC.path), var str = String(data: data, encoding: .utf8) {
+            str = str.replacingOccurrences(
+                of: "AM_GNU_GETTEXT_VERSION([0.19])\nm4_ifdef([AM_GNU_GETTEXT_REQUIRE_VERSION],[\nAM_GNU_GETTEXT_REQUIRE_VERSION([0.19])\n])",
+                with: "AM_GNU_GETTEXT_VERSION([0.19])"
+            )
+            try? str.write(toFile: configureAC.path, atomically: true, encoding: .utf8)
+        }
     }
 
     override func flagsDependencelibrarys() -> [Library] {
