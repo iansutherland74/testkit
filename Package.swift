@@ -20,6 +20,7 @@ let package = Package(
         .library(name: "Libswscale", targets: ["Libswscale"]),
         .library(name: "libass", targets: ["libfreetype", "libfribidi", "libharfbuzz", "libass"]),
         .library(name: "libmpv", targets: ["FFmpegKit", "libass", "libmpv"]),
+        .library(name: "readline", targets: ["readline"]),
         .library(name: "libupnp", targets: ["libupnp"]),
         .library(name: "libnfs", targets: ["libnfs"]),
         .library(name: "libsmb2", targets: ["libsmb2"]),
@@ -254,6 +255,10 @@ let package = Package(
         .binaryTarget(
             name: "libcrypto",
             path: "Sources/libcrypto.xcframework"
+        ),
+        .binaryTarget(
+            name: "readline",
+            path: "Sources/readline.xcframework"
         ),
         .binaryTarget(
             name: "libupnp",
