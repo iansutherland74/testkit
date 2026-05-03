@@ -20,6 +20,9 @@ let package = Package(
         .library(name: "Libswscale", targets: ["Libswscale"]),
         .library(name: "libass", targets: ["libfreetype", "libfribidi", "libharfbuzz", "libass"]),
         .library(name: "libmpv", targets: ["FFmpegKit", "libass", "libmpv"]),
+        .library(name: "libupnp", targets: ["libupnp"]),
+        .library(name: "libnfs", targets: ["libnfs"]),
+        .library(name: "libsmb2", targets: ["libsmb2"]),
         .executable(name: "ffmpeg", targets: ["ffmpeg"]),
         .executable(name: "ffplay", targets: ["ffplay"]),
         .executable(name: "ffprobe", targets: ["ffprobe"]),
@@ -251,6 +254,18 @@ let package = Package(
         .binaryTarget(
             name: "libcrypto",
             path: "Sources/libcrypto.xcframework"
+        ),
+        .binaryTarget(
+            name: "libupnp",
+            path: "Sources/libupnp.xcframework"
+        ),
+        .binaryTarget(
+            name: "libnfs",
+            path: "Sources/libnfs.xcframework"
+        ),
+        .binaryTarget(
+            name: "libsmb2",
+            path: "Sources/libsmb2.xcframework"
         ),
     ]
 )
