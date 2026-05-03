@@ -149,59 +149,59 @@ enum Library: String, CaseIterable {
         case .FFmpeg:
             return "master"
         case .libfreetype:
-            return "VER-2-13-2"
+            return "VER-2-14-3"
         case .libfribidi:
-            return "v1.0.12"
+            return "v1.0.16"
         case .libharfbuzz:
-            return "5.3.1"
+            return "14.2.0"
         case .libass:
-            return "0.17.1-branch"
+            return "0.17.4"
         case .libpng:
-            return "v1.6.43"
+            return "v1.6.58"
         case .libmpv:
-            return "v0.37.0"
+            return "v0.41.0"
         case .openssl:
-            return "openssl-3.2.1"
+            return "openssl-3.6.2"
         case .libsrt:
-            return "v1.5.3"
+            return "v1.5.5"
         case .libsmbclient:
-            return "samba-4.15.13"
+            return "samba-4.24.1"
         case .gnutls:
-            return "3.8.3"
+            return "3.8.13"
         case .nettle:
-            return "nettle_3.9.1_release_20230601"
+            return "nettle_4.0_release_20260205"
         case .libdav1d:
-            return "1.1.0"
+            return "1.5.3"
         case .gmp:
-            return "v6.2.1"
+            return "6.3.0"
         case .libtls:
-            return "OPENBSD_7_3"
+            return "v4.3.1"
         case .libzvbi:
-            return "v0.2.42"
+            return "v0.2.44"
         case .boringssl:
             return "master"
         case .libplacebo:
-            return "v6.338.2"
+            return "v7.360.1"
         case .vulkan:
-            return "v1.2.8"
+            return "v1.4.1"
         case .libshaderc:
-            return "v2024.0"
+            return "v2026.2"
         case .readline:
-            return "readline-8.2"
+            return "readline-8.3"
         case .libglslang:
-            return "13.1.1"
+            return "16.3.0"
         case .libdovi:
-            return "2.1.0"
+            return "libdovi-3.3.2"
         case .lcms2:
-            return "lcms2.16"
+            return "lcms2.19"
         case .libupnp:
-            return "release-1.14.18"
+            return "release-1.18.5"
         case .libnfs:
-            return "libnfs-5.0.2"
+            return "libnfs-6.0.2"
         case .libbluray:
-            return "1.3.4"
+            return "1.4.1"
         case .libfontconfig:
-            return "2.14.2"
+            return "2.17.1"
         case .libsmb2:
             return "master"
         }
@@ -259,6 +259,15 @@ enum Library: String, CaseIterable {
                 value = String(value.dropFirst(3))
             }
             return "https://github.com/\(value)/\(value)"
+        }
+    }
+
+    var tarballURL: String? {
+        switch self {
+        case .gmp:
+            return "https://gmplib.org/download/gmp/gmp-\(version).tar.xz"
+        default:
+            return nil
         }
     }
 
@@ -354,12 +363,20 @@ class BaseBuild {
         self.library = library
         directoryURL = URL.currentDirectory + "\(library.rawValue)-\(library.version)"
         if !FileManager.default.fileExists(atPath: directoryURL.path) {
-            var arguments = ["clone", "--recurse-submodules"]
-            if !BaseBuild.gitCloneAll {
-                arguments.append(contentsOf: ["--depth", "1"])
+            if let tarball = library.tarballURL {
+                let tarballName = URL(string: tarball)!.lastPathComponent
+                let tarballPath = (URL.currentDirectory + tarballName).path
+                try! Utility.launch(path: "/usr/bin/curl", arguments: ["-L", "-o", tarballPath, tarball])
+                try! Utility.launch(path: "/usr/bin/tar", arguments: ["xf", tarballPath, "-C", URL.currentDirectory.path])
+                try? FileManager.default.removeItem(atPath: tarballPath)
+            } else {
+                var arguments = ["clone", "--recurse-submodules"]
+                if !BaseBuild.gitCloneAll {
+                    arguments.append(contentsOf: ["--depth", "1"])
+                }
+                arguments.append(contentsOf: ["--branch", library.version, library.url, directoryURL.path])
+                try! Utility.launch(path: "/usr/bin/git", arguments: arguments)
             }
-            arguments.append(contentsOf: ["--branch", library.version, library.url, directoryURL.path])
-            try! Utility.launch(path: "/usr/bin/git", arguments: arguments)
         }
         let patch = URL.currentDirectory + "../Plugins/BuildFFmpeg/patch/\(library.rawValue)"
         if FileManager.default.fileExists(atPath: patch.path) {
@@ -477,8 +494,12 @@ class BaseBuild {
     }
 
     func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
-        let cFlags = cFlags(platform: platform, arch: arch).joined(separator: " ")
-        let ldFlags = ldFlags(platform: platform, arch: arch).joined(separator: " ")
+        let cFlags = cFlags(platform: platform, arch: arch)
+            .map { $0.replacingOccurrences(of: " ", with: "\\ ") }
+            .joined(separator: " ")
+        let ldFlags = ldFlags(platform: platform, arch: arch)
+            .map { $0.replacingOccurrences(of: " ", with: "\\ ") }
+            .joined(separator: " ")
         let pkgConfigPath = platform.pkgConfigPath(arch: arch)
         let pkgConfigPathDefault = Utility.shell("pkg-config --variable pc_path pkg-config", isOutput: true)!
         let path = "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:"
@@ -698,10 +719,10 @@ class BaseBuild {
         let crossFile = url + "crossFile.meson"
         let prefix = thinDir(platform: platform, arch: arch)
         let cFlags = cFlags(platform: platform, arch: arch).map {
-            "'" + $0 + "'"
+            "'" + $0.replacingOccurrences(of: " ", with: "\\ ") + "'"
         }.joined(separator: ", ")
         let ldFlags = ldFlags(platform: platform, arch: arch).map {
-            "'" + $0 + "'"
+            "'" + $0.replacingOccurrences(of: " ", with: "\\ ") + "'"
         }.joined(separator: ", ")
         let content = """
         [binaries]
