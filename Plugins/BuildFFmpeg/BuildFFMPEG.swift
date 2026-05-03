@@ -252,10 +252,14 @@ class BuildFFMPEG: BaseBuild {
         }
         if hasVulkan {
             arguments += [
-                "--enable-filter=avgblur_vulkan", "--enable-filter=blend_vulkan", "--enable-filter=bwdif_vulkan",
+                "--enable-filter=avgblur_vulkan", "--enable-filter=blackdetect_vulkan",
+                "--enable-filter=blend_vulkan", "--enable-filter=bwdif_vulkan",
                 "--enable-filter=chromaber_vulkan", "--enable-filter=gblur_vulkan",
-                "--enable-filter=hflip_vulkan", "--enable-filter=nlmeans_vulkan",
-                "--enable-filter=transpose_vulkan", "--enable-filter=xfade_vulkan",
+                "--enable-filter=hflip_vulkan", "--enable-filter=interlace_vulkan",
+                "--enable-filter=nlmeans_vulkan", "--enable-filter=overlay_vulkan",
+                "--enable-filter=scale_vulkan", "--enable-filter=scdet_vulkan",
+                "--enable-filter=transpose_vulkan", "--enable-filter=v360_vulkan",
+                "--enable-filter=xfade_vulkan",
             ]
         }
         return arguments
