@@ -1416,6 +1416,8 @@ NET_API_STATUS libnetapi_set_debuglevel(struct libnetapi_ctx *ctx,
 NET_API_STATUS libnetapi_set_creds(struct libnetapi_ctx *ctx,
 				   struct cli_credentials *creds);
 
+NET_API_STATUS libnetapi_get_creds(struct libnetapi_ctx *ctx,
+				   struct cli_credentials **creds);
 
 NET_API_STATUS libnetapi_set_username(struct libnetapi_ctx *ctx,
 				      const char *username);
@@ -1672,6 +1674,49 @@ NET_API_STATUS NetRequestOfflineDomainJoin(uint8_t *provision_bin_data /* [in] [
 					   uint32_t provision_bin_data_size /* [in] */,
 					   uint32_t options /* [in] */,
 					   const char * windows_path /* [in] [unique] */);
+
+/************************************************************//**
+ *
+ * NetComposeOfflineDomainJoin
+ *
+ * @brief Compose an offline domain join blob
+ *
+ * Intended to be used by external applications who provision the computer
+ * acconut on their own.
+ *
+ *
+ * @param[in] dns_domain_name The domain DNS name
+ * @param[in] netbios_domain_name The domain NETBIOS name
+ * @param[in] domain_sid The domain SID
+ * @param[in] domain_guid The domain GUID
+ * @param[in] forest_name The forest name
+ * @param[in] machine_account_name The machine account name
+ * @param[in] machine_account_password The machine account password
+ * @param[in] dc_name The domain controller name used to provision the account
+ * @param[in] dc_address The domain controller address used to provision the account
+ * @param[in] domain_is_ad True if the domain is AD
+ * @param[in,out] compose_bin_data The generated binary buffer
+ * @param[in,out] compose_bin_data_size The generated binary buffer size
+ * @param[in,out] compose_text_data The generated text data blob
+ * @return NET_API_STATUS
+ *
+ * example join/compose_offline_domain_join.c
+ *
+ ***************************************************************/
+
+NET_API_STATUS NetComposeOfflineDomainJoin(const char *dns_domain_name /* [in] [ref] */,
+					   const char *netbios_domain_name /* [in] [ref] */,
+					   struct domsid *domain_sid /* [in] [ref] */,
+					   struct GUID *domain_guid /* [in] [ref] */,
+					   const char *forest_name /* [in] [ref] */,
+					   const char *machine_account_name /* [in] [ref] */,
+					   const char *machine_account_password /* [in] [ref] */,
+					   const char *dc_name /* [in] [unique] */,
+					   const char *dc_address /* [in] [unique] */,
+					   int domain_is_ad /* [in] */,
+					   uint8_t **provision_bin_data /* [in,out] [unique] */,
+					   uint32_t *provision_bin_data_size /* [in,out] [unique] */,
+					   const char * *provision_text_data /* [in,out] [unique] */);
 
 /************************************************************//**
  *
@@ -2040,7 +2085,7 @@ NET_API_STATUS NetUserGetLocalGroups(const char * server_name /* [in] */,
  *
  * @param[in] server_name The server name to connect to
  * @param[in] level The enumeration level used for the query
- * @param[in] idx The index to start the the display enumeration at
+ * @param[in] idx The index to start the display enumeration at
  * @param[in] entries_requested The number of entries requested
  * @param[in] prefmaxlen The requested maximal buffer size
  * @param[out] entries_read The number of returned entries

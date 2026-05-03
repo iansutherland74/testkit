@@ -1,0 +1,75 @@
+diff --git a/src/libbluray/bdj/bdj.c b/src/libbluray/bdj/bdj.c
+index 359bc8f..d476772 100644
+--- a/src/libbluray/bdj/bdj.c
++++ b/src/libbluray/bdj/bdj.c
+@@ -44,6 +44,7 @@
+ #include <sys/wait.h>
+ #include <limits.h>
+ #include <unistd.h>
++#include <TargetConditionals.h>
+ #endif
+ 
+ #ifdef _WIN32
+@@ -58,7 +59,7 @@
+ #endif
+ 
+ struct bdjava_s {
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+     void   *h_libjli;
+ #endif
+     void   *h_libjvm;
+@@ -238,7 +239,7 @@ static inline char *_utf8_to_cp(const char *utf8)
+ static const char *jre_plugin_path = MACOS_JRE_HOME;
+ #endif
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+ 
+ #define MACOS_JAVA_HOME "/usr/libexec/java_home"
+ static char *_java_home_macos()
+@@ -343,7 +344,7 @@ static void *_jvm_dlopen_a(const char *java_home,
+   return dll;
+ }
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+ static void *_load_jli_macos()
+ {
+     const char *java_home = NULL;
+@@ -467,7 +468,7 @@ static void *_load_jvm(const char **p_java_home, const char *app_java_home)
+     }
+ #endif
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+     java_home = _java_home_macos();
+     if (java_home) {
+         handle = _jvm_dlopen_a(java_home, jvm_dir, num_jvm_dir, jvm_lib);
+@@ -1030,7 +1031,7 @@ BDJAVA* bdj_open(const char *path, struct bluray *bd,
+         return NULL;
+     }
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+     /* On macOS we need to load libjli to workaround a bug where the wrong
+      * version would be used: https://bugs.openjdk.java.net/browse/JDK-7131356
+      */
+@@ -1065,7 +1066,7 @@ BDJAVA* bdj_open(const char *path, struct bluray *bd,
+         return NULL;
+     }
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+     bdjava->h_libjli = jli_lib;
+ #endif
+     bdjava->h_libjvm = jvm_lib;
+@@ -1130,7 +1131,7 @@ void bdj_close(BDJAVA *bdjava)
+         dl_dlclose(bdjava->h_libjvm);
+     }
+ 
+-#if defined(__APPLE__) && !defined(HAVE_BDJ_J2ME)
++#if defined(__APPLE__) && TARGET_OS_OSX && !defined(HAVE_BDJ_J2ME)
+     if (bdjava->h_libjli) {
+         dl_dlclose(bdjava->h_libjli);
+     }

@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/misc.h>
 #define dom_sid2 dom_sid
@@ -109,7 +108,7 @@
 #define SID_NT_RESTRICTED	( "S-1-5-12" )
 #define SID_NT_TERMINAL_SERVER_USERS	( "S-1-5-13" )
 #define SID_NT_REMOTE_INTERACTIVE	( "S-1-5-14" )
-#define SID_NT_THIS_ORGANISATION	( "S-1-5-15" )
+#define SID_NT_THIS_ORGANIZATION	( "S-1-5-15" )
 #define SID_NT_IUSR	( "S-1-5-17" )
 #define SID_NT_SYSTEM	( "S-1-5-18" )
 #define SID_NT_LOCAL_SERVICE	( "S-1-5-19" )
@@ -117,7 +116,8 @@
 #define SID_NT_DIGEST_AUTHENTICATION	( "S-1-5-64-21" )
 #define SID_NT_NTLM_AUTHENTICATION	( "S-1-5-64-10" )
 #define SID_NT_SCHANNEL_AUTHENTICATION	( "S-1-5-64-14" )
-#define SID_NT_OTHER_ORGANISATION	( "S-1-5-1000" )
+#define SID_NT_THIS_ORGANIZATION_CERTIFICATE	( "S-1-5-65-1" )
+#define SID_NT_OTHER_ORGANIZATION	( "S-1-5-1000" )
 #define NAME_BUILTIN	( "BUILTIN" )
 #define SID_BUILTIN	( "S-1-5-32" )
 #define SID_BUILTIN_ADMINISTRATORS	( "S-1-5-32-544" )
@@ -139,19 +139,36 @@
 #define SID_BUILTIN_AUTH_ACCESS	( "S-1-5-32-560" )
 #define SID_BUILTIN_TS_LICENSE_SERVERS	( "S-1-5-32-561" )
 #define SID_BUILTIN_DISTRIBUTED_COM_USERS	( "S-1-5-32-562" )
+#define SID_BUILTIN_IUSERS	( "S-1-5-32-568" )
 #define SID_BUILTIN_CRYPTO_OPERATORS	( "S-1-5-32-569" )
 #define SID_BUILTIN_EVENT_LOG_READERS	( "S-1-5-32-573" )
 #define SID_BUILTIN_CERT_SERV_DCOM_ACCESS	( "S-1-5-32-574" )
+#define SID_BUILTIN_RDS_REMOTE_ACCESS_SERVERS	( "S-1-5-32-575" )
+#define SID_BUILTIN_RDS_ENDPOINT_SERVERS	( "S-1-5-32-576" )
+#define SID_BUILTIN_RDS_MANAGEMENT_SERVERS	( "S-1-5-32-577" )
+#define SID_BUILTIN_HYPER_V_ADMINS	( "S-1-5-32-578" )
+#define SID_BUILTIN_ACCESS_CONTROL_ASSISTANCE_OPS	( "S-1-5-32-579" )
+#define SID_BUILTIN_REMOTE_MANAGEMENT_USERS	( "S-1-5-32-580" )
+#define SID_BUILTIN_SYSTEM_MANAGED_ACCOUNTS_GRP	( "S-1-5-32-581" )
+#define SID_BUILTIN_STORAGE_REPLICA_ADMINISTRATORS	( "S-1-5-32-582" )
+#define SID_SECURITY_RESTRICTED_CODE	( "S-1-5-33" )
 #define SID_SAMBA_UNIX_USER_OWNER	( "S-1-22-1" )
 #define SID_SAMBA_UNIX_GROUP_OWNER	( "S-1-22-2" )
-#define SID_SAMBA_SMB3	( "S-1-22-1397571891" )
 #define NAME_NT_SERVICE	( "NT SERVICE" )
 #define SID_NT_NT_SERVICE	( "S-1-5-80" )
 #define SID_NT_TRUSTED_INSTALLER	( "S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464" )
 #define SID_AUTHENTICATION_AUTHORITY_ASSERTED_IDENTITY	( "S-1-18-1" )
 #define SID_SERVICE_ASSERTED_IDENTITY	( "S-1-18-2" )
+#define SID_FRESH_PUBLIC_KEY_IDENTITY	( "S-1-18-3" )
 #define SID_COMPOUNDED_AUTHENTICATION	( "S-1-5-21-0-0-0-496" )
 #define SID_CLAIMS_VALID	( "S-1-5-21-0-0-0-497" )
+#define SID_USER_MODE_DRIVERS	( "S-1-5-84-0-0-0-0-0" )
+#define SID_SECURITY_BUILTIN_PACKAGE_ANY_PACKAGE	( "S-1-15-2-1" )
+#define SID_SECURITY_MANDATORY_LOW	( "S-1-16-4096" )
+#define SID_SECURITY_MANDATORY_MEDIUM	( "S-1-16-8192" )
+#define SID_SECURITY_MANDATORY_MEDIUM_PLUS	( "S-1-16-8448" )
+#define SID_SECURITY_MANDATORY_HIGH	( "S-1-16-12288" )
+#define SID_SECURITY_MANDATORY_SYSTEM	( "S-1-16-16384" )
 #define SID_NT_NFS_SUBSYSTEM	( "S-1-5-88" )
 #define SID_NT_NFS_USER	( "S-1-5-88-1" )
 #define SID_NT_NFS_GROUP	( "S-1-5-88-2" )
@@ -172,6 +189,12 @@
 #define DOMAIN_RID_ENTERPRISE_ADMINS	( 519 )
 #define DOMAIN_RID_POLICY_ADMINS	( 520 )
 #define DOMAIN_RID_READONLY_DCS	( 521 )
+#define DOMAIN_RID_CLONEABLE_CONTROLLERS	( 522 )
+#define DOMAIN_RID_PROTECTED_USERS	( 525 )
+#define DOMAIN_RID_KEY_ADMINS	( 526 )
+#define DOMAIN_RID_ENTERPRISE_KEY_ADMINS	( 527 )
+#define DOMAIN_RID_FOREST_TRUST_ACCOUNTS	( 528 )
+#define DOMAIN_RID_EXTERNAL_TRUST_ACCOUNTS	( 529 )
 #define DOMAIN_RID_RAS_SERVERS	( 553 )
 #define DOMAIN_RID_RODC_ALLOW	( 571 )
 #define DOMAIN_RID_RODC_DENY	( 572 )
@@ -194,11 +217,19 @@
 #define BUILTIN_RID_AUTH_ACCESS	( 560 )
 #define BUILTIN_RID_TS_LICENSE_SERVERS	( 561 )
 #define BUILTIN_RID_DISTRIBUTED_COM_USERS	( 562 )
+#define BUILTIN_RID_IUSERS	( 568 )
 #define BUILTIN_RID_CRYPTO_OPERATORS	( 569 )
 #define BUILTIN_RID_EVENT_LOG_READERS	( 573 )
 #define BUILTIN_RID_CERT_SERV_DCOM_ACCESS	( 574 )
+#define BUILTIN_RID_RDS_REMOTE_ACCESS_SERVERS	( 575 )
+#define BUILTIN_RID_RDS_ENDPOINT_SERVERS	( 576 )
+#define BUILTIN_RID_RDS_MANAGEMENT_SERVERS	( 577 )
+#define BUILTIN_RID_HYPER_V_ADMINS	( 578 )
+#define BUILTIN_RID_ACCESS_CONTROL_ASSISTANCE_OPS	( 579 )
+#define BUILTIN_RID_REMOTE_MANAGEMENT_USERS	( 580 )
 #define NT4_ACL_REVISION	( SECURITY_ACL_REVISION_NT4 )
 #define SD_REVISION	( SECURITY_DESCRIPTOR_REVISION_1 )
+#define SE_GROUP_DEFAULT_FLAGS	( SE_GROUP_MANDATORY|SE_GROUP_ENABLED_BY_DEFAULT|SE_GROUP_ENABLED )
 #define SMB_SUPPORTED_SECINFO_FLAGS	( (SECINFO_OWNER|SECINFO_GROUP|SECINFO_DACL|SECINFO_SACL|SECINFO_LABEL|SECINFO_ATTRIBUTE|SECINFO_SCOPE|SECINFO_BACKUP|0) )
 #define GUID_DRS_ALLOCATE_RIDS	( "1abd7cf8-0a99-11d1-adbb-00c04fd8d5cd" )
 #define GUID_DRS_CHANGE_DOMAIN_MASTER	( "014bf69c-7b3b-11d1-85f6-08002be74fab" )
@@ -226,12 +257,26 @@
 #define GUID_DRS_DNS_HOST_NAME	( "72e39547-7b18-11d1-adef-00c04fd8d5cd" )
 #define GUID_DRS_ADD_DNS_HOST_NAME	( "80863791-dbe9-4eb8-837e-7f0ab55d9ac7" )
 #define GUID_DRS_BEHAVIOR_VERSION	( "d31a8757-2447-4545-8081-3bb610cacbf2" )
+#define GUID_DRS_DS_VALIDATED_WRITE_COMPUTER	( "9b026da6-0d3c-465c-8bee-5199d7165cba" )
 struct dom_sid {
 	uint8_t sid_rev_num;
 	int8_t num_auths;/* [range(0,15)] */
 	uint8_t id_auth[6];
 	uint32_t sub_auths[15];
 }/* [gensize,noprint,nopull,nopush,nosize,public] */;
+
+enum implicit_owner_rights
+#ifndef USE_UINT_ENUMS
+ {
+	IMPLICIT_OWNER_READ_CONTROL_RIGHTS,
+	IMPLICIT_OWNER_READ_CONTROL_AND_WRITE_DAC_RIGHTS
+}
+#else
+ { __do_not_use_enum_implicit_owner_rights=INT_MAX}
+#define IMPLICIT_OWNER_READ_CONTROL_RIGHTS ( 0 )
+#define IMPLICIT_OWNER_READ_CONTROL_AND_WRITE_DAC_RIGHTS ( 1 )
+#endif
+;
 
 enum sec_privilege
 #ifndef USE_UINT_ENUMS
@@ -264,7 +309,7 @@ enum sec_privilege
 	SEC_PRIV_DISK_OPERATOR=(int)(0x1003)
 }
 #else
- { __do_not_use_enum_sec_privilege=0x7FFFFFFF}
+ { __do_not_use_enum_sec_privilege=INT_MAX}
 #define SEC_PRIV_INVALID ( 0x0 )
 #define SEC_PRIV_INCREASE_QUOTA ( 0x5 )
 #define SEC_PRIV_MACHINE_ACCOUNT ( 0x6 )
@@ -357,10 +402,21 @@ enum security_ace_type
 	SEC_ACE_TYPE_ACCESS_ALLOWED_OBJECT=(int)(5),
 	SEC_ACE_TYPE_ACCESS_DENIED_OBJECT=(int)(6),
 	SEC_ACE_TYPE_SYSTEM_AUDIT_OBJECT=(int)(7),
-	SEC_ACE_TYPE_SYSTEM_ALARM_OBJECT=(int)(8)
+	SEC_ACE_TYPE_SYSTEM_ALARM_OBJECT=(int)(8),
+	SEC_ACE_TYPE_ACCESS_ALLOWED_CALLBACK=(int)(9),
+	SEC_ACE_TYPE_ACCESS_DENIED_CALLBACK=(int)(10),
+	SEC_ACE_TYPE_ACCESS_ALLOWED_CALLBACK_OBJECT=(int)(11),
+	SEC_ACE_TYPE_ACCESS_DENIED_CALLBACK_OBJECT=(int)(12),
+	SEC_ACE_TYPE_SYSTEM_AUDIT_CALLBACK=(int)(13),
+	SEC_ACE_TYPE_SYSTEM_ALARM_CALLBACK=(int)(14),
+	SEC_ACE_TYPE_SYSTEM_AUDIT_CALLBACK_OBJECT=(int)(15),
+	SEC_ACE_TYPE_SYSTEM_ALARM_CALLBACK_OBJECT=(int)(16),
+	SEC_ACE_TYPE_SYSTEM_MANDATORY_LABEL=(int)(17),
+	SEC_ACE_TYPE_SYSTEM_RESOURCE_ATTRIBUTE=(int)(18),
+	SEC_ACE_TYPE_SYSTEM_SCOPED_POLICY_ID=(int)(19)
 }
 #else
- { __do_not_use_enum_security_ace_type=0x7FFFFFFF}
+ { __do_not_use_enum_security_ace_type=INT_MAX}
 #define SEC_ACE_TYPE_ACCESS_ALLOWED ( 0 )
 #define SEC_ACE_TYPE_ACCESS_DENIED ( 1 )
 #define SEC_ACE_TYPE_SYSTEM_AUDIT ( 2 )
@@ -370,6 +426,17 @@ enum security_ace_type
 #define SEC_ACE_TYPE_ACCESS_DENIED_OBJECT ( 6 )
 #define SEC_ACE_TYPE_SYSTEM_AUDIT_OBJECT ( 7 )
 #define SEC_ACE_TYPE_SYSTEM_ALARM_OBJECT ( 8 )
+#define SEC_ACE_TYPE_ACCESS_ALLOWED_CALLBACK ( 9 )
+#define SEC_ACE_TYPE_ACCESS_DENIED_CALLBACK ( 10 )
+#define SEC_ACE_TYPE_ACCESS_ALLOWED_CALLBACK_OBJECT ( 11 )
+#define SEC_ACE_TYPE_ACCESS_DENIED_CALLBACK_OBJECT ( 12 )
+#define SEC_ACE_TYPE_SYSTEM_AUDIT_CALLBACK ( 13 )
+#define SEC_ACE_TYPE_SYSTEM_ALARM_CALLBACK ( 14 )
+#define SEC_ACE_TYPE_SYSTEM_AUDIT_CALLBACK_OBJECT ( 15 )
+#define SEC_ACE_TYPE_SYSTEM_ALARM_CALLBACK_OBJECT ( 16 )
+#define SEC_ACE_TYPE_SYSTEM_MANDATORY_LABEL ( 17 )
+#define SEC_ACE_TYPE_SYSTEM_RESOURCE_ATTRIBUTE ( 18 )
+#define SEC_ACE_TYPE_SYSTEM_SCOPED_POLICY_ID ( 19 )
 #endif
 ;
 
@@ -391,18 +458,74 @@ struct security_ace_object {
 	union security_ace_object_inherited_type inherited_type;/* [switch_is(flags&SEC_ACE_INHERITED_OBJECT_TYPE_PRESENT)] */
 };
 
+/* bitmap claim_flags */
+#define CLAIM_SECURITY_ATTRIBUTE_NON_INHERITABLE ( 1 )
+#define CLAIM_SECURITY_ATTRIBUTE_VALUE_CASE_SENSITIVE ( 2 )
+#define CLAIM_SECURITY_ATTRIBUTE_USE_FOR_DENY_ONLY ( 4 )
+#define CLAIM_SECURITY_ATTRIBUTE_DISABLED_BY_DEFAULT ( 8 )
+#define CLAIM_SECURITY_ATTRIBUTE_DISABLED ( 0x10 )
+#define CLAIM_SECURITY_ATTRIBUTE_MANDATORY ( 0x20 )
+#define CLAIM_SECURITY_ATTRIBUTE_MANUAL ( 1<<16 )
+#define CLAIM_SECURITY_ATTRIBUTE_POLICY_DERIVED ( 1<<17 )
+#define CLAIM_SECURITY_ATTRIBUTE_UNIQUE_AND_SORTED ( 1<<30 )
+#define CLAIM_SECURITY_ATTRIBUTE_RESERVED_FOR_SAMBA ( 1UL<<31 )
+
+enum security_claim_value_type
+#ifndef USE_UINT_ENUMS
+ {
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_INT64=(int)(0x0001),
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_UINT64=(int)(0x0002),
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_STRING=(int)(0x0003),
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_SID=(int)(0x0005),
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_BOOLEAN=(int)(0x0006),
+	CLAIM_SECURITY_ATTRIBUTE_TYPE_OCTET_STRING=(int)(0x0010)
+}
+#else
+ { __do_not_use_enum_security_claim_value_type=INT_MAX}
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_INT64 ( 0x0001 )
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_UINT64 ( 0x0002 )
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_STRING ( 0x0003 )
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_SID ( 0x0005 )
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_BOOLEAN ( 0x0006 )
+#define CLAIM_SECURITY_ATTRIBUTE_TYPE_OCTET_STRING ( 0x0010 )
+#endif
+;
+
+union claim_values {
+	int64_t *int_value;/* [case(CLAIM_SECURITY_ATTRIBUTE_TYPE_INT64),relative] */
+	uint64_t *uint_value;/* [case(CLAIM_SECURITY_ATTRIBUTE_TYPE_UINT64),relative] */
+	const char * string_value;/* [case(CLAIM_SECURITY_ATTRIBUTE_TYPE_STRING),flag(LIBNDR_FLAG_STR_NULLTERM|LIBNDR_FLAG_ALIGN2),relative] */
+	DATA_BLOB *sid_value;/* [case(CLAIM_SECURITY_ATTRIBUTE_TYPE_SID),relative] */
+	DATA_BLOB *octet_value;/* [case(CLAIM_SECURITY_ATTRIBUTE_TYPE_OCTET_STRING),relative] */
+}/* [flag(LIBNDR_FLAG_NOALIGN),nodiscriminant] */;
+
+struct CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 {
+	const char * name;/* [flag(LIBNDR_FLAG_STR_NULLTERM|LIBNDR_FLAG_ALIGN2),relative] */
+	uint16_t value_type;
+	uint32_t flags;
+	uint32_t value_count;
+	union claim_values *values;/* [switch_is(value_type)] */
+}/* [gensize,public] */;
+
 union security_ace_object_ctr {
-	struct security_ace_object object;/* [case(SEC_ACE_TYPE_ACCESS_ALLOWED_OBJECT)] */
+	struct security_ace_object object;/* [default] */
 }/* [nodiscriminant,public] */;
+
+union security_ace_coda {
+	DATA_BLOB conditions;/* [case(SEC_ACE_TYPE_ACCESS_ALLOWED_CALLBACK),flag(LIBNDR_FLAG_REMAINING)] */
+	struct CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 claim;/* [case(SEC_ACE_TYPE_SYSTEM_RESOURCE_ATTRIBUTE)] */
+	DATA_BLOB ignored;/* [default,flag(LIBNDR_FLAG_REMAINING)] */
+}/* [gensize,nodiscriminant,public] */;
 
 struct security_ace {
 	enum security_ace_type type;
 	uint8_t flags;
 	uint16_t size;/* [value(ndr_size_security_ace(r,ndr->flags))] */
 	uint32_t access_mask;
-	union security_ace_object_ctr object;/* [switch_is(type)] */
+	union security_ace_object_ctr object;/* [switch_is(sec_ace_object(type))] */
 	struct dom_sid trustee;
-}/* [gensize,nopull,nosize,public] */;
+	union security_ace_coda coda;/* [subcontext(0),subcontext_size(ndr_subcontext_size_of_ace_coda(r,size,ndr->flags)),switch_is(type)] */
+}/* [gensize,nopull,nopush,nosize,public] */;
 
 enum security_acl_revision
 #ifndef USE_UINT_ENUMS
@@ -411,7 +534,7 @@ enum security_acl_revision
 	SECURITY_ACL_REVISION_ADS=(int)(4)
 }
 #else
- { __do_not_use_enum_security_acl_revision=0x7FFFFFFF}
+ { __do_not_use_enum_security_acl_revision=INT_MAX}
 #define SECURITY_ACL_REVISION_NT4 ( 2 )
 #define SECURITY_ACL_REVISION_ADS ( 4 )
 #endif
@@ -430,7 +553,7 @@ enum security_descriptor_revision
 	SECURITY_DESCRIPTOR_REVISION_1=(int)(1)
 }
 #else
- { __do_not_use_enum_security_descriptor_revision=0x7FFFFFFF}
+ { __do_not_use_enum_security_descriptor_revision=INT_MAX}
 #define SECURITY_DESCRIPTOR_REVISION_1 ( 1 )
 #endif
 ;
@@ -478,11 +601,41 @@ struct sec_desc_buf {
 #define SE_GROUP_RESOURCE ( 0x20000000 )
 #define SE_GROUP_LOGON_ID ( 0xC0000000 )
 
+enum claims_evaluation_control
+#ifndef USE_UINT_ENUMS
+ {
+	CLAIMS_EVALUATION_INVALID_STATE=(int)(0),
+	CLAIMS_EVALUATION_NEVER=(int)(1),
+	CLAIMS_EVALUATION_ALWAYS=(int)(2)
+}
+#else
+ { __do_not_use_enum_claims_evaluation_control=INT_MAX}
+#define CLAIMS_EVALUATION_INVALID_STATE ( 0 )
+#define CLAIMS_EVALUATION_NEVER ( 1 )
+#define CLAIMS_EVALUATION_ALWAYS ( 2 )
+#endif
+;
+
 struct security_token {
 	uint32_t num_sids;
 	struct dom_sid *sids;/* [size_is(num_sids)] */
 	uint64_t privilege_mask;
 	uint32_t rights_mask;
+	uint32_t num_local_claims;
+	uint32_t num_user_claims;
+	uint32_t num_device_claims;
+	uint32_t num_device_sids;
+	struct CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 *local_claims;/* [size_is(num_local_claims)] */
+	struct CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 *user_claims;/* [size_is(num_user_claims)] */
+	struct CLAIM_SECURITY_ATTRIBUTE_RELATIVE_V1 *device_claims;/* [size_is(num_device_claims)] */
+	struct dom_sid *device_sids;/* [size_is(num_device_sids)] */
+	enum claims_evaluation_control evaluate_claims;
+}/* [public] */;
+
+struct security_token_descriptor_fuzzing_pair {
+	struct security_token token;
+	struct security_descriptor sd;
+	uint32_t access_desired;
 }/* [public] */;
 
 struct security_unix_token {

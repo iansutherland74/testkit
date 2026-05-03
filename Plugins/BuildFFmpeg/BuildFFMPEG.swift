@@ -228,9 +228,13 @@ class BuildFFMPEG: BaseBuild {
         //        if platform == .isimulator || platform == .tvsimulator {
         //            arguments.append("--assert-level=1")
         //        }
+        var hasVulkan = false
         for library in Library.allCases {
             let path = URL.currentDirectory + [library.rawValue, platform.rawValue, "thin", arch.rawValue]
             if FileManager.default.fileExists(atPath: path.path), library.isFFmpegDependentLibrary {
+                if library == .vulkan {
+                    hasVulkan = true
+                }
                 arguments.append("--enable-\(library.rawValue)")
                 if library == .libsrt || library == .libsmbclient {
                     arguments.append("--enable-protocol=\(library.rawValue)")
@@ -245,6 +249,14 @@ class BuildFFMPEG: BaseBuild {
                     arguments.append("--enable-filter=libplacebo")
                 }
             }
+        }
+        if hasVulkan {
+            arguments += [
+                "--enable-filter=avgblur_vulkan", "--enable-filter=blend_vulkan", "--enable-filter=bwdif_vulkan",
+                "--enable-filter=chromaber_vulkan", "--enable-filter=gblur_vulkan",
+                "--enable-filter=hflip_vulkan", "--enable-filter=nlmeans_vulkan",
+                "--enable-filter=transpose_vulkan", "--enable-filter=xfade_vulkan",
+            ]
         }
         return arguments
     }
@@ -360,10 +372,6 @@ class BuildFFMPEG: BaseBuild {
         "--enable-filter=vflip", "--enable-filter=volume",
         "--enable-filter=w3fdif",
         "--enable-filter=yadif",
-        "--enable-filter=avgblur_vulkan", "--enable-filter=blend_vulkan", "--enable-filter=bwdif_vulkan",
-        "--enable-filter=chromaber_vulkan", "--enable-filter=gblur_vulkan",
-        "--enable-filter=hflip_vulkan", "--enable-filter=nlmeans_vulkan",
-        "--enable-filter=transpose_vulkan", "--enable-filter=xfade_vulkan",
     ]
 }
 
@@ -384,15 +392,56 @@ class BuildZvbi: BaseBuild {
         }
     }
 
+    override func build(platform: PlatformType, arch: ArchType, buildURL: URL) throws {
+        try autoToolsBuildWithNoSpacePaths(platform: platform, arch: arch, buildURL: buildURL)
+    }
+
     override func arguments(platform: PlatformType, arch: ArchType) -> [String] {
         ["--host=\(platform.host(arch: arch))",
-         "--prefix=\(thinDir(platform: platform, arch: arch).path)"]
+         "--prefix=\(thinDir(platform: platform, arch: arch).path)",
+         "--without-x",
+         "--disable-proxy",
+         "--without-doxygen"]
     }
 }
 
 class BuildSRT: BaseBuild {
     init() {
         super.init(library: .libsrt)
+    }
+
+    // cryspr-gnutls.h includes <nettle/aes.h>, so nettle headers must be in CFLAGS
+    override func flagsDependencelibrarys() -> [Library] {
+        [.gnutls, .nettle]
+    }
+
+    // CMake word-splits unquoted -I/path with space in CFLAGS; substitute via no-space symlink
+    override func build(platform: PlatformType, arch: ArchType, buildURL: URL) throws {
+        let fm = FileManager.default
+        let safeRoot = URL(fileURLWithPath: "/tmp/ffmpegkit-nospace", isDirectory: true)
+        try? fm.createDirectory(at: safeRoot, withIntermediateDirectories: true, attributes: nil)
+
+        let spacedScriptDir = URL.currentDirectory.path
+        let safeScriptLink = (safeRoot + "Script").path
+        if fm.fileExists(atPath: safeScriptLink) {
+            if let target = try? fm.destinationOfSymbolicLink(atPath: safeScriptLink), target != spacedScriptDir {
+                try? fm.removeItem(atPath: safeScriptLink)
+            }
+        }
+        if !fm.fileExists(atPath: safeScriptLink) {
+            try fm.createSymbolicLink(atPath: safeScriptLink, withDestinationPath: spacedScriptDir)
+        }
+
+        var environ = environment(platform: platform, arch: arch)
+        for (key, value) in environ {
+            environ[key] = value.replacingOccurrences(of: spacedScriptDir, with: safeScriptLink)
+        }
+
+        try? _ = Utility.launch(path: "/usr/bin/make", arguments: ["clean"], currentDirectoryURL: buildURL, environment: environ)
+        try? _ = Utility.launch(path: "/usr/bin/make", arguments: ["distclean"], currentDirectoryURL: buildURL, environment: environ)
+        try configure(buildURL: buildURL, environ: environ, platform: platform, arch: arch)
+        try Utility.launch(path: "/usr/bin/make", arguments: ["-j8"], currentDirectoryURL: buildURL, environment: environ)
+        try Utility.launch(path: "/usr/bin/make", arguments: ["-j8", "install"], currentDirectoryURL: buildURL, environment: environ)
     }
 
     override func arguments(platform: PlatformType, arch _: ArchType) -> [String] {
@@ -431,18 +480,12 @@ class BuildBluray: BaseBuild {
         super.init(library: .libbluray)
     }
 
-    // 只有macos支持mount
-    override func platforms() -> [PlatformType] {
-        [.macos]
-    }
-
     override func arguments(platform: PlatformType, arch: ArchType) -> [String] {
         [
-            "--disable-bdjava-jar",
-            "--disable-silent-rules",
-            "--disable-dependency-tracking",
-            "--host=\(platform.host(arch: arch))",
-            "--prefix=\(thinDir(platform: platform, arch: arch).path)",
+            "-Dbdj_jar=disabled",
+            "-Denable_tools=false",
+            "-Denable_examples=false",
+            "-Denable_devtools=false",
         ]
     }
 }

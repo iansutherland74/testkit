@@ -1,0 +1,15 @@
+--- a/source3/modules/wscript_build
++++ b/source3/modules/wscript_build
+@@ -276,9 +276,9 @@ if bld.CONFIG_SET("HAVE_RPC_XDR_H"):
+     bld.SAMBA_GENERATOR('nfs41acl-xdr-c',
+                         source='nfs41acl.x',
+                         target='nfs41acl_xdr.c',
+-                        rule='cp -f ${SRC} ${TGT[0].parent} && rpcgen -c ' \
+-                             '${TGT[0].path_from(tsk.get_cwd())[:-len(tsk.outputs[0].name)] + tsk.inputs[0].name} | ' + \
+-                             xdr_buf_hack + ' > ${TGT}')
++                        rule='cp -f "${SRC}" "${TGT[0].parent}" && rpcgen -c "' \
++                             '${TGT[0].path_from(tsk.get_cwd())[:-len(tsk.outputs[0].name)] + tsk.inputs[0].name}' + \
++                             '" | ' + xdr_buf_hack + ' > "${TGT}"')
+ 
+     bld.SAMBA_SUBSYSTEM('VFS_NFS4_XDR',
+                         source='nfs41acl_xdr.c',

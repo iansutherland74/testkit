@@ -141,7 +141,7 @@ enum samr_DomainInfoClass
 	DomainModifiedInformation2=(int)(13)
 }
 #else
- { __do_not_use_enum_samr_DomainInfoClass=0x7FFFFFFF}
+ { __do_not_use_enum_samr_DomainInfoClass=INT_MAX}
 #define DomainPasswordInformation ( 1 )
 #define DomainGeneralInformation ( 2 )
 #define DomainLogoffInformation ( 3 )
@@ -167,7 +167,7 @@ enum samr_Role
 	SAMR_ROLE_DOMAIN_PDC=(int)(3)
 }
 #else
- { __do_not_use_enum_samr_Role=0x7FFFFFFF}
+ { __do_not_use_enum_samr_Role=INT_MAX}
 #define SAMR_ROLE_STANDALONE ( 0 )
 #define SAMR_ROLE_DOMAIN_MEMBER ( 1 )
 #define SAMR_ROLE_DOMAIN_BDC ( 2 )
@@ -190,7 +190,7 @@ enum samr_DomainServerState
 	DOMAIN_SERVER_DISABLED=(int)(2)
 }
 #else
- { __do_not_use_enum_samr_DomainServerState=0x7FFFFFFF}
+ { __do_not_use_enum_samr_DomainServerState=INT_MAX}
 #define DOMAIN_SERVER_ENABLED ( 1 )
 #define DOMAIN_SERVER_DISABLED ( 2 )
 #endif
@@ -202,7 +202,7 @@ struct samr_DomInfo1 {
 	uint32_t password_properties;
 	int64_t max_password_age;
 	int64_t min_password_age;
-};
+}/* [public] */;
 
 struct samr_DomGeneralInformation {
 	NTTIME force_logoff_time;
@@ -311,7 +311,7 @@ enum samr_GroupInfoEnum
 	GROUPINFOALL2=(int)(5)
 }
 #else
- { __do_not_use_enum_samr_GroupInfoEnum=0x7FFFFFFF}
+ { __do_not_use_enum_samr_GroupInfoEnum=INT_MAX}
 #define GROUPINFOALL ( 1 )
 #define GROUPINFONAME ( 2 )
 #define GROUPINFOATTRIBUTES ( 3 )
@@ -348,7 +348,7 @@ enum samr_AliasInfoEnum
 	ALIASINFODESCRIPTION=(int)(3)
 }
 #else
- { __do_not_use_enum_samr_AliasInfoEnum=0x7FFFFFFF}
+ { __do_not_use_enum_samr_AliasInfoEnum=INT_MAX}
 #define ALIASINFOALL ( 1 )
 #define ALIASINFONAME ( 2 )
 #define ALIASINFODESCRIPTION ( 3 )
@@ -386,10 +386,12 @@ enum samr_UserInfoLevel
 	UserInternal4Information=(int)(23),
 	UserInternal5Information=(int)(24),
 	UserInternal4InformationNew=(int)(25),
-	UserInternal5InformationNew=(int)(26)
+	UserInternal5InformationNew=(int)(26),
+	UserInternal7InformationNew=(int)(31),
+	UserInternal8InformationNew=(int)(32)
 }
 #else
- { __do_not_use_enum_samr_UserInfoLevel=0x7FFFFFFF}
+ { __do_not_use_enum_samr_UserInfoLevel=INT_MAX}
 #define UserGeneralInformation ( 1 )
 #define UserPreferencesInformation ( 2 )
 #define UserLogonInformation ( 3 )
@@ -413,6 +415,8 @@ enum samr_UserInfoLevel
 #define UserInternal5Information ( 24 )
 #define UserInternal4InformationNew ( 25 )
 #define UserInternal5InformationNew ( 26 )
+#define UserInternal7InformationNew ( 31 )
+#define UserInternal8InformationNew ( 32 )
 #endif
 ;
 
@@ -529,7 +533,7 @@ struct samr_UserInfo17 {
 };
 
 struct samr_Password {
-	uint8_t hash[16];
+	uint8_t hash[16];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct samr_UserInfo18 {
@@ -614,7 +618,7 @@ struct samr_UserInfo21 {
 };
 
 struct samr_CryptPassword {
-	uint8_t data[516];
+	uint8_t data[516];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct samr_UserInfo23 {
@@ -628,7 +632,7 @@ struct samr_UserInfo24 {
 };
 
 struct samr_CryptPasswordEx {
-	uint8_t data[532];
+	uint8_t data[532];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
 
 struct samr_UserInfo25 {
@@ -639,6 +643,24 @@ struct samr_UserInfo25 {
 struct samr_UserInfo26 {
 	struct samr_CryptPasswordEx password;
 	uint8_t password_expired;
+};
+
+struct samr_EncryptedPasswordAES {
+	uint8_t auth_data[64];
+	uint8_t salt[16];
+	uint32_t cipher_len;
+	uint8_t *cipher;/* [size_is(cipher_len),unique] */
+	uint64_t PBKDF2Iterations;
+};
+
+struct samr_UserInfo31 {
+	struct samr_EncryptedPasswordAES password;
+	uint8_t password_expired;
+};
+
+struct samr_UserInfo32 {
+	struct samr_UserInfo21 info;
+	struct samr_EncryptedPasswordAES password;
 };
 
 union samr_UserInfo {
@@ -665,6 +687,8 @@ union samr_UserInfo {
 	struct samr_UserInfo24 info24;/* [case(24)] */
 	struct samr_UserInfo25 info25;/* [case(25)] */
 	struct samr_UserInfo26 info26;/* [case(26)] */
+	struct samr_UserInfo31 info31;/* [case(31)] */
+	struct samr_UserInfo32 info32;/* [case(32)] */
 }/* [switch_type(uint16)] */;
 
 struct samr_RidWithAttribute {
@@ -748,7 +772,7 @@ enum samr_ConnectVersion
 	SAMR_CONNECT_AFTER_W2K=(int)(3)
 }
 #else
- { __do_not_use_enum_samr_ConnectVersion=0x7FFFFFFF}
+ { __do_not_use_enum_samr_ConnectVersion=INT_MAX}
 #define SAMR_CONNECT_PRE_W2K ( 1 )
 #define SAMR_CONNECT_W2K ( 2 )
 #define SAMR_CONNECT_AFTER_W2K ( 3 )
@@ -769,7 +793,7 @@ enum samPwdChangeReason
 	SAM_PWD_CHANGE_PASSWORD_TOO_LONG=(int)(8)
 }
 #else
- { __do_not_use_enum_samPwdChangeReason=0x7FFFFFFF}
+ { __do_not_use_enum_samPwdChangeReason=INT_MAX}
 #define SAM_PWD_CHANGE_NO_ERROR ( 0 )
 #define SAM_PWD_CHANGE_PASSWORD_TOO_SHORT ( 1 )
 #define SAM_PWD_CHANGE_PWD_IN_HISTORY ( 2 )
@@ -787,9 +811,26 @@ struct userPwdChangeFailureInformation {
 	struct lsa_String filterModuleName;
 };
 
+enum samr_SupportedFeatures
+#ifndef USE_UINT_ENUMS
+ {
+	SAMR_CONNECT_FEATURE_RID_ONLY=(int)(0x00000001),
+	SAMR_CONNECT_FEATURE_RESRVED1=(int)(0x00000002),
+	SAMR_CONNECT_FEATURE_RESRVED2=(int)(0x00000004),
+	SAMR_CONNECT_FEATURE_USE_AES=(int)(0x00000010)
+}
+#else
+ { __do_not_use_enum_samr_SupportedFeatures=INT_MAX}
+#define SAMR_CONNECT_FEATURE_RID_ONLY ( 0x00000001 )
+#define SAMR_CONNECT_FEATURE_RESRVED1 ( 0x00000002 )
+#define SAMR_CONNECT_FEATURE_RESRVED2 ( 0x00000004 )
+#define SAMR_CONNECT_FEATURE_USE_AES ( 0x00000010 )
+#endif
+;
+
 struct samr_ConnectInfo1 {
 	enum samr_ConnectVersion client_version;
-	uint32_t unknown2;
+	enum samr_SupportedFeatures supported_features;
 };
 
 union samr_ConnectInfo {
@@ -812,7 +853,7 @@ enum samr_ValidatePasswordLevel
 	NetValidatePasswordReset=(int)(3)
 }
 #else
- { __do_not_use_enum_samr_ValidatePasswordLevel=0x7FFFFFFF}
+ { __do_not_use_enum_samr_ValidatePasswordLevel=INT_MAX}
 #define NetValidateAuthentication ( 1 )
 #define NetValidatePasswordChange ( 2 )
 #define NetValidatePasswordReset ( 3 )
@@ -835,7 +876,7 @@ enum samr_ValidationStatus
 	SAMR_VALIDATION_STATUS_PASSWORD_FILTER_ERROR=(int)(10)
 }
 #else
- { __do_not_use_enum_samr_ValidationStatus=0x7FFFFFFF}
+ { __do_not_use_enum_samr_ValidationStatus=INT_MAX}
 #define SAMR_VALIDATION_STATUS_SUCCESS ( 0 )
 #define SAMR_VALIDATION_STATUS_PASSWORD_MUST_CHANGE ( 1 )
 #define SAMR_VALIDATION_STATUS_ACCOUNT_LOCKED_OUT ( 2 )
@@ -1904,6 +1945,45 @@ struct samr_ValidatePassword {
 
 	struct {
 		union samr_ValidatePasswordRep **rep;/* [ref,switch_is(level)] */
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct samr_Opnum68NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct samr_Opnum69NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct samr_Opnum70NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct samr_Opnum71NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct samr_Opnum72NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct samr_ChangePasswordUser4 {
+	struct {
+		struct lsa_String *server;/* [unique] */
+		struct lsa_String *account;/* [ref] */
+		struct samr_EncryptedPasswordAES *password;/* [ref] */
+	} in;
+
+	struct {
 		NTSTATUS result;
 	} out;
 

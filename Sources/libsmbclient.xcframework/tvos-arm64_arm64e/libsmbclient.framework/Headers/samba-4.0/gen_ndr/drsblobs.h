@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/drsuapi.h>
 #include <gen_ndr/misc.h>
@@ -180,7 +179,7 @@ enum prefixMapVersion
 	PREFIX_MAP_VERSION_DSDB=(int)(0x44534442)
 }
 #else
- { __do_not_use_enum_prefixMapVersion=0x7FFFFFFF}
+ { __do_not_use_enum_prefixMapVersion=INT_MAX}
 #define PREFIX_MAP_VERSION_DSDB ( 0x44534442 )
 #endif
 ;
@@ -229,7 +228,7 @@ enum supplementalCredentialsSignature
 	SUPPLEMENTAL_CREDENTIALS_SIGNATURE=(int)(0x0050)
 }
 #else
- { __do_not_use_enum_supplementalCredentialsSignature=0x7FFFFFFF}
+ { __do_not_use_enum_supplementalCredentialsSignature=INT_MAX}
 #define SUPPLEMENTAL_CREDENTIALS_SIGNATURE ( 0x0050 )
 #endif
 ;
@@ -328,7 +327,7 @@ struct package_PrimaryWDigestBlob {
 	uint8_t unknown2;/* [value(0x01)] */
 	uint8_t num_hashes;
 	uint32_t unknown3;/* [value(0)] */
-	uint64_t uuknown4;/* [value(0)] */
+	uint64_t unknown4;/* [value(0)] */
 	struct package_PrimaryWDigestHash *hashes;
 }/* [public] */;
 
@@ -430,7 +429,7 @@ enum ExtendedErrorComputerNamePresent
 	EXTENDED_ERROR_COMPUTER_NAME_NOT_PRESENT=(int)(2)
 }
 #else
- { __do_not_use_enum_ExtendedErrorComputerNamePresent=0x7FFFFFFF}
+ { __do_not_use_enum_ExtendedErrorComputerNamePresent=INT_MAX}
 #define EXTENDED_ERROR_COMPUTER_NAME_PRESENT ( 1 )
 #define EXTENDED_ERROR_COMPUTER_NAME_NOT_PRESENT ( 2 )
 #endif
@@ -457,7 +456,7 @@ enum ExtendedErrorParamType
 	EXTENDED_ERROR_PARAM_TYPE_BLOB=(int)(7)
 }
 #else
- { __do_not_use_enum_ExtendedErrorParamType=0x7FFFFFFF}
+ { __do_not_use_enum_ExtendedErrorParamType=INT_MAX}
 #define EXTENDED_ERROR_PARAM_TYPE_ASCII_STRING ( 1 )
 #define EXTENDED_ERROR_PARAM_TYPE_UNICODE_STRING ( 2 )
 #define EXTENDED_ERROR_PARAM_TYPE_UINT32 ( 3 )
@@ -499,6 +498,25 @@ struct ExtendedErrorInfoPtr {
 	struct ExtendedErrorInfo *info;/* [unique] */
 };
 
+enum ForestTrustInfoRecordType
+#ifndef USE_UINT_ENUMS
+ {
+	FOREST_TRUST_TOP_LEVEL_NAME=(int)(LSA_FOREST_TRUST_TOP_LEVEL_NAME),
+	FOREST_TRUST_TOP_LEVEL_NAME_EX=(int)(LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX),
+	FOREST_TRUST_DOMAIN_INFO=(int)(LSA_FOREST_TRUST_DOMAIN_INFO),
+	FOREST_TRUST_BINARY_DATA=(int)(LSA_FOREST_TRUST_BINARY_DATA),
+	FOREST_TRUST_SCANNER_INFO=(int)(LSA_FOREST_TRUST_SCANNER_INFO)
+}
+#else
+ { __do_not_use_enum_ForestTrustInfoRecordType=INT_MAX}
+#define FOREST_TRUST_TOP_LEVEL_NAME ( LSA_FOREST_TRUST_TOP_LEVEL_NAME )
+#define FOREST_TRUST_TOP_LEVEL_NAME_EX ( LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX )
+#define FOREST_TRUST_DOMAIN_INFO ( LSA_FOREST_TRUST_DOMAIN_INFO )
+#define FOREST_TRUST_BINARY_DATA ( LSA_FOREST_TRUST_BINARY_DATA )
+#define FOREST_TRUST_SCANNER_INFO ( LSA_FOREST_TRUST_SCANNER_INFO )
+#endif
+;
+
 struct ForestTrustString {
 	uint32_t size;/* [value(strlen_m(string))] */
 	const char *string;/* [charset(UTF8)] */
@@ -506,36 +524,28 @@ struct ForestTrustString {
 
 struct ForestTrustDataDomainInfo {
 	uint32_t sid_size;/* [value(ndr_size_dom_sid0(&sid,ndr->flags))] */
-	struct dom_sid sid;/* [subcontext(0),subcontext_size(sid_size)] */
+	struct dom_sid0 sid;/* [subcontext(0),subcontext_size(sid_size)] */
 	struct ForestTrustString dns_name;
 	struct ForestTrustString netbios_name;
-}/* [flag(LIBNDR_FLAG_NOALIGN)] */;
+}/* [flag(LIBNDR_FLAG_NOALIGN),public] */;
 
 struct ForestTrustDataBinaryData {
 	uint32_t size;
 	uint8_t *data;
-}/* [flag(LIBNDR_FLAG_NOALIGN)] */;
+}/* [flag(LIBNDR_FLAG_NOALIGN|LIBNDR_PRINT_ARRAY_HEX),public] */;
+
+struct ForestTrustDataScannerInfo {
+	enum ForestTrustInfoRecordType sub_type;/* [value(FOREST_TRUST_SCANNER_INFO)] */
+	struct ForestTrustDataDomainInfo info;
+}/* [flag(LIBNDR_FLAG_NOALIGN),public] */;
 
 union ForestTrustData {
 	struct ForestTrustString name;/* [case(FOREST_TRUST_TOP_LEVEL_NAME)] */
 	struct ForestTrustDataDomainInfo info;/* [case(FOREST_TRUST_DOMAIN_INFO)] */
-	struct ForestTrustDataBinaryData data;/* [default] */
-}/* [nodiscriminant] */;
-
-enum ForestTrustInfoRecordType
-#ifndef USE_UINT_ENUMS
- {
-	FOREST_TRUST_TOP_LEVEL_NAME=(int)(LSA_FOREST_TRUST_TOP_LEVEL_NAME),
-	FOREST_TRUST_TOP_LEVEL_NAME_EX=(int)(LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX),
-	FOREST_TRUST_DOMAIN_INFO=(int)(LSA_FOREST_TRUST_DOMAIN_INFO)
-}
-#else
- { __do_not_use_enum_ForestTrustInfoRecordType=0x7FFFFFFF}
-#define FOREST_TRUST_TOP_LEVEL_NAME ( LSA_FOREST_TRUST_TOP_LEVEL_NAME )
-#define FOREST_TRUST_TOP_LEVEL_NAME_EX ( LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX )
-#define FOREST_TRUST_DOMAIN_INFO ( LSA_FOREST_TRUST_DOMAIN_INFO )
-#endif
-;
+	struct ForestTrustDataBinaryData binary;/* [case(FOREST_TRUST_BINARY_DATA)] */
+	struct ForestTrustDataScannerInfo scanner_info;/* [case(FOREST_TRUST_SCANNER_INFO),subcontext(4)] */
+	struct ForestTrustDataBinaryData unknown;/* [default] */
+}/* [nodiscriminant,public] */;
 
 struct ForestTrustInfoRecord {
 	uint32_t flags;
@@ -561,7 +571,7 @@ enum EncryptedSecretAlgorithm
 	ENC_SECRET_AES_128_AEAD=(int)(1)
 }
 #else
- { __do_not_use_enum_EncryptedSecretAlgorithm=0x7FFFFFFF}
+ { __do_not_use_enum_EncryptedSecretAlgorithm=INT_MAX}
 #define ENC_SECRET_AES_128_AEAD ( 1 )
 #endif
 ;

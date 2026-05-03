@@ -34,7 +34,11 @@ class BuildHarfbuzz: BaseBuild {
 
     override func arguments(platform _: PlatformType, arch _: ArchType) -> [String] {
         [
+            "-Dcairo=disabled",
             "-Dglib=disabled",
+            "-Dgobject=disabled",
+            "-Dintrospection=disabled",
+            "-Dtests=disabled",
             "-Ddocs=disabled",
         ]
     }
@@ -69,11 +73,37 @@ class BuildASS: BaseBuild {
         super.init(library: .libass)
     }
 
+    override func build(platform: PlatformType, arch: ArchType, buildURL: URL) throws {
+        try autoToolsBuildWithNoSpacePaths(platform: platform, arch: arch, buildURL: buildURL)
+    }
+
+    override func environment(platform: PlatformType, arch: ArchType) -> [String: String] {
+        var env = super.environment(platform: platform, arch: arch)
+        let safeRoot = URL(fileURLWithPath: "/tmp/ffmpegkit-nospace", isDirectory: true)
+        let safeScript = (safeRoot + "Script").path
+        let triplet = "\(platform.rawValue)/thin/\(arch.rawValue)"
+
+        let freetypeBase = "\(safeScript)/libfreetype/\(triplet)"
+        env["FREETYPE_CFLAGS"] = "-I\(freetypeBase)/include/freetype2"
+        env["FREETYPE_LIBS"] = "\(freetypeBase)/lib/libfreetype.a -L\(freetypeBase)/lib -lbz2 -lz"
+
+        let fribidiBase = "\(safeScript)/libfribidi/\(triplet)"
+        env["FRIBIDI_CFLAGS"] = "-I\(fribidiBase)/include/fribidi"
+        env["FRIBIDI_LIBS"] = "\(fribidiBase)/lib/libfribidi.a"
+
+        let harfbuzzBase = "\(safeScript)/libharfbuzz/\(triplet)"
+        env["HARFBUZZ_CFLAGS"] = "-I\(harfbuzzBase)/include/harfbuzz"
+        env["HARFBUZZ_LIBS"] = "\(harfbuzzBase)/lib/libharfbuzz.a"
+
+        return env
+    }
+
     override func arguments(platform: PlatformType, arch: ArchType) -> [String] {
         var result =
             [
                 "--disable-libtool-lock",
                 "--disable-fontconfig",
+                "--disable-libunibreak",
                 "--disable-require-system-font-provider",
                 "--disable-test",
                 "--disable-profile",

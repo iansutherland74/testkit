@@ -410,6 +410,14 @@ void gnutls_x509_spki_set_rsa_pss_params(gnutls_x509_spki_t spki,
 					 gnutls_digest_algorithm_t dig,
 					 unsigned int salt_size);
 
+int gnutls_x509_spki_set_rsa_oaep_params(gnutls_x509_spki_t spki,
+					 gnutls_digest_algorithm_t dig,
+					 const gnutls_datum_t *label);
+
+int gnutls_x509_spki_get_rsa_oaep_params(gnutls_x509_spki_t spki,
+					 gnutls_digest_algorithm_t *dig,
+					 gnutls_datum_t *label);
+
 int gnutls_x509_crt_get_pk_algorithm(gnutls_x509_crt_t cert,
 				     unsigned int *bits);
 int gnutls_x509_crt_set_spki(gnutls_x509_crt_t crt,
@@ -1004,11 +1012,14 @@ unsigned gnutls_x509_crt_check_key_purpose(gnutls_x509_crt_t cert,
  * @GNUTLS_PKCS_PBES2_AES_256: PBES2 AES-256.
  * @GNUTLS_PKCS_PBES2_DES: PBES2 single DES.
  * @GNUTLS_PKCS_PBES1_DES_MD5: PBES1 with single DES; for compatibility with openssl only.
+ * @GNUTLS_PKCS_PBES1_DES_SHA1: PBES1 with single DES; for compatibility purposes only.
  * @GNUTLS_PKCS_PBES2_GOST_TC26Z: PBES2 GOST 28147-89 CFB with TC26-Z S-box.
  * @GNUTLS_PKCS_PBES2_GOST_CPA: PBES2 GOST 28147-89 CFB with CryptoPro-A S-box.
  * @GNUTLS_PKCS_PBES2_GOST_CPB: PBES2 GOST 28147-89 CFB with CryptoPro-B S-box.
  * @GNUTLS_PKCS_PBES2_GOST_CPC: PBES2 GOST 28147-89 CFB with CryptoPro-C S-box.
  * @GNUTLS_PKCS_PBES2_GOST_CPD: PBES2 GOST 28147-89 CFB with CryptoPro-D S-box.
+ * @GNUTLS_PKCS_MLDSA_SEED: Emit seed as an ML-DSA private key.
+ * @GNUTLS_PKCS_MLDSA_EXPANDED: Emit an expanded ML-DSA private key.
  *
  * Enumeration of different PKCS encryption flags.
  */
@@ -1028,7 +1039,10 @@ typedef enum gnutls_pkcs_encrypt_flags_t {
 	GNUTLS_PKCS_PBES2_GOST_CPA = 1 << 12,
 	GNUTLS_PKCS_PBES2_GOST_CPB = 1 << 13,
 	GNUTLS_PKCS_PBES2_GOST_CPC = 1 << 14,
-	GNUTLS_PKCS_PBES2_GOST_CPD = 1 << 15
+	GNUTLS_PKCS_PBES2_GOST_CPD = 1 << 15,
+	GNUTLS_PKCS_PBES1_DES_SHA1 = 1 << 16,
+	GNUTLS_PKCS_MLDSA_SEED = 1 << 17,
+	GNUTLS_PKCS_MLDSA_EXPANDED = 1 << 18,
 } gnutls_pkcs_encrypt_flags_t;
 
 #define GNUTLS_PKCS_CIPHER_MASK(x) ((x) & (~(GNUTLS_PKCS_NULL_PASSWORD)))

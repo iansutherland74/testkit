@@ -1,0 +1,28 @@
+diff --git a/meson.build b/meson.build
+index 4d7f7f4..a8f4bde 100644
+--- a/meson.build
++++ b/meson.build
+@@ -52,7 +52,7 @@ else
+     test_args += '-D_POSIX_C_SOURCE=200809L'
+ endif
+ 
+-if host_machine.system() == 'darwin'
++if host_machine.system() == 'darwin' and host_machine.subsystem() == 'macos'
+     extra_dependencies += dependency('appleframeworks',
+         modules: ['CoreFoundation', 'DiskArbitration'])
+ elif host_machine.system() == 'netbsd'
+diff --git a/src/meson.build b/src/meson.build
+index 45ccf8d..070ed1e 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -70,7 +70,7 @@ if host_machine.system() == 'windows'
+         # for EnumFontFamiliesExW
+         extra_dependencies += cc.find_library('gdi32')
+     endif
+-
+-elif host_machine.system() == 'darwin'
++
++elif host_machine.system() == 'darwin' and host_machine.subsystem() == 'macos'
+     libbluray_src += files(
+         'file/dir_posix.c',
+         'file/dirs_darwin.c',

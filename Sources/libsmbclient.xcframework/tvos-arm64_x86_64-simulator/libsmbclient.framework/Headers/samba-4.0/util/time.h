@@ -1,4 +1,4 @@
-/* 
+/*
    Unix SMB/CIFS implementation.
    time utility functions
 
@@ -11,12 +11,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -27,6 +27,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <talloc.h>
+#include <time.h>
 
 #ifndef TIME_T_MIN
 /* we use 0 here, because (time_t)-1 means error */
@@ -70,6 +71,9 @@
 
 /* 64 bit time (100 nanosec) 1601 - cifs6.txt, section 3.5, page 30, 4 byte aligned */
 typedef uint64_t NTTIME;
+
+#define NTTIME_USEC (10UL)
+#define NTTIME_MSEC (1000UL * NTTIME_USEC)
 
 /**
  External access to time_t_min and time_t_max.
@@ -237,11 +241,6 @@ bool timeval_is_zero(const struct timeval *tv);
 struct timeval timeval_current(void);
 
 /**
-  return a timeval struct with the given elements
-*/
-struct timeval timeval_set(uint32_t secs, uint32_t usecs);
-
-/**
   return a timeval ofs microseconds after tv
 */
 struct timeval timeval_add(const struct timeval *tv,
@@ -269,7 +268,7 @@ struct timeval timeval_current_ofs_msec(uint32_t msecs);
 struct timeval timeval_current_ofs_usec(uint32_t usecs);
 
 /**
-  compare two timeval structures. 
+  compare two timeval structures.
   Return -1 if tv1 < tv2
   Return 0 if tv1 == tv2
   Return 1 if tv1 > tv2
@@ -314,14 +313,6 @@ struct timeval timeval_max(const struct timeval *tv1,
 			   const struct timeval *tv2);
 
 /**
-  return the difference between two timevals as a timeval
-  if tv1 comes after tv2, then return a zero timeval
-  (this is *tv2 - *tv1)
-*/
-struct timeval timeval_until(const struct timeval *tv1,
-			     const struct timeval *tv2);
-
-/**
   convert a timeval to a NTTIME
 */
 NTTIME timeval_to_nttime(const struct timeval *tv);
@@ -359,6 +350,7 @@ struct timespec timespec_current(void);
 struct timespec timespec_min(const struct timespec *ts1,
 			     const struct timespec *ts2);
 int timespec_compare(const struct timespec *ts1, const struct timespec *ts2);
+bool timespec_equal(const struct timespec *ts1, const struct timespec *ts2);
 void round_timespec_to_sec(struct timespec *ts);
 void round_timespec_to_usec(struct timespec *ts);
 void round_timespec_to_nttime(struct timespec *ts);

@@ -11,6 +11,7 @@
 #include <gen_ndr/lsa.h>
 #include <gen_ndr/samr.h>
 #include <gen_ndr/security.h>
+#include <gen_ndr/nbt.h>
 #define netr_DeltaEnum8Bit netr_DeltaEnum
 #define netr_SamDatabaseID8Bit netr_SamDatabaseID
 #define ENC_CRC32 KERB_ENCTYPE_DES_CBC_CRC
@@ -22,12 +23,33 @@
 #define ENC_FAST_SUPPORTED KERB_ENCTYPE_FAST_SUPPORTED
 #define ENC_COMPOUND_IDENTITY_SUPPORTED KERB_ENCTYPE_COMPOUND_IDENTITY_SUPPORTED
 #define ENC_CLAIMS_SUPPORTED KERB_ENCTYPE_CLAIMS_SUPPORTED
+#define ENC_RESOURCE_SID_COMPRESSION_DISABLED KERB_ENCTYPE_RESOURCE_SID_COMPRESSION_DISABLED
+#define NETLOGON_SERVER_PIPE_STATE_MAGIC 0x4f555358
+#define DS_SERVER_PDC NBT_SERVER_PDC
+#define DS_SERVER_GC NBT_SERVER_GC
+#define DS_SERVER_LDAP NBT_SERVER_LDAP
+#define DS_SERVER_DS NBT_SERVER_DS
+#define DS_SERVER_KDC NBT_SERVER_KDC
+#define DS_SERVER_TIMESERV NBT_SERVER_TIMESERV
+#define DS_SERVER_CLOSEST NBT_SERVER_CLOSEST
+#define DS_SERVER_WRITABLE NBT_SERVER_WRITABLE
+#define DS_SERVER_GOOD_TIMESERV NBT_SERVER_GOOD_TIMESERV
+#define DS_SERVER_NDNC NBT_SERVER_NDNC
+#define DS_SERVER_SELECT_SECRET_DOMAIN_6 NBT_SERVER_SELECT_SECRET_DOMAIN_6 /* 2008 / RODC */
+#define DS_SERVER_FULL_SECRET_DOMAIN_6 NBT_SERVER_FULL_SECRET_DOMAIN_6 /* 2008 */
+#define DS_SERVER_WEBSERV NBT_SERVER_ADS_WEB_SERVICE
+#define DS_SERVER_DS_8 NBT_SERVER_DS_8 /* 2012 */
+#define DS_SERVER_DS_9 NBT_SERVER_DS_9 /* 2012R2 */
+#define DS_SERVER_DS_10 NBT_SERVER_DS_10 /* 2016 */
+#define DS_DNS_CONTROLLER NBT_SERVER_HAS_DNS_NAME
+#define DS_DNS_DOMAIN NBT_SERVER_IS_DEFAULT_NC
+#define DS_DNS_FOREST_ROOT NBT_SERVER_FOREST_ROOT
 #ifndef _HEADER_netlogon
 #define _HEADER_netlogon
 
 #define NETLOGON_NEG_128BIT	( NETLOGON_NEG_STRONG_KEYS )
 #define NETLOGON_NEG_SCHANNEL	( NETLOGON_NEG_AUTHENTICATED_RPC )
-#define DSGETDC_VALID_FLAGS	( (DS_FORCE_REDISCOVERY|DS_DIRECTORY_SERVICE_REQUIRED|DS_DIRECTORY_SERVICE_PREFERRED|DS_GC_SERVER_REQUIRED|DS_PDC_REQUIRED|DS_BACKGROUND_ONLY|DS_IP_REQUIRED|DS_KDC_REQUIRED|DS_TIMESERV_REQUIRED|DS_WRITABLE_REQUIRED|DS_GOOD_TIMESERV_PREFERRED|DS_AVOID_SELF|DS_ONLY_LDAP_NEEDED|DS_IS_FLAT_NAME|DS_IS_DNS_NAME|DS_TRY_NEXTCLOSEST_SITE|DS_DIRECTORY_SERVICE_6_REQUIRED|DS_WEB_SERVICE_REQUIRED|DS_RETURN_FLAT_NAME|DS_RETURN_DNS_NAME) )
+#define DSGETDC_VALID_FLAGS	( (DS_FORCE_REDISCOVERY|DS_DIRECTORY_SERVICE_REQUIRED|DS_DIRECTORY_SERVICE_PREFERRED|DS_GC_SERVER_REQUIRED|DS_PDC_REQUIRED|DS_BACKGROUND_ONLY|DS_IP_REQUIRED|DS_KDC_REQUIRED|DS_TIMESERV_REQUIRED|DS_WRITABLE_REQUIRED|DS_GOOD_TIMESERV_PREFERRED|DS_AVOID_SELF|DS_ONLY_LDAP_NEEDED|DS_IS_FLAT_NAME|DS_IS_DNS_NAME|DS_TRY_NEXTCLOSEST_SITE|DS_DIRECTORY_SERVICE_6_REQUIRED|DS_WEB_SERVICE_REQUIRED|DS_DIRECTORY_SERVICE_8_REQUIRED|DS_DIRECTORY_SERVICE_9_REQUIRED|DS_DIRECTORY_SERVICE_10_REQUIRED|DS_RETURN_FLAT_NAME|DS_RETURN_DNS_NAME) )
 #define NETLOGON_PASSWORD_VERSION_NUMBER_PRESENT	( 0x02231968 )
 #define DS_GFTI_UPDATE_TDO	( 0x1 )
 struct netr_UasInfo {
@@ -94,7 +116,7 @@ struct netr_PasswordInfo {
 	struct netr_IdentityInfo identity_info;
 	struct samr_Password lmpassword;
 	struct samr_Password ntpassword;
-};
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct netr_ChallengeResponse {
 	uint16_t length;
@@ -107,14 +129,36 @@ struct netr_NetworkInfo {
 	uint8_t challenge[8];
 	struct netr_ChallengeResponse nt;
 	struct netr_ChallengeResponse lm;
-}/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct netr_GenericInfo {
 	struct netr_IdentityInfo identity_info;
 	struct lsa_String package_name;
 	uint32_t length;
 	uint8_t *data;/* [size_is(length),unique] */
-}/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
+
+/* bitmap netr_TicketLogonInfoRequestOptions */
+#define NETLOGON_TICKET_LOGON_CRITICAL_OPTIONS ( 0x000000000000FFFF )
+#define NETLOGON_TICKET_LOGON_NO_AUTHORIZATION_DATA ( 0x0000000000000001 )
+#define NETLOGON_TICKET_LOGON_COMPUTER_DOMAIN_OPTIONS ( 0x00000000FFFF0000 )
+#define NETLOGON_TICKET_LOGON_SKIP_RESOURCE_GROUPS ( 0x0000000000010000 )
+#define NETLOGON_TICKET_LOGON_SKIP_A2A_CHECKS ( 0x0000000000020000 )
+#define NETLOGON_TICKET_LOGON_TRANSIT_OPTIONS ( 0x0000FFFF00000000 )
+#define NETLOGON_TICKET_LOGON_SKIP_SID_FILTER ( 0x0000000100000000 )
+#define NETLOGON_TICKET_LOGON_SKIP_NAMESPACE_FILTER ( 0x0000000200000000 )
+#define NETLOGON_TICKET_LOGON_KERBEROS_OPTIONS ( 0xFFFF000000000000 )
+#define NETLOGON_TICKET_LOGON_SKIP_PAC_SIGNATURES ( 0x0001000000000000 )
+#define NETLOGON_TICKET_LOGON_REMOVE_RESOURCE_GROUPS ( 0x0002000000000000 )
+
+struct netr_TicketLogonInfo {
+	struct netr_IdentityInfo identity_info;
+	uint64_t request_options;
+	uint32_t service_ticket_length;
+	uint8_t *service_ticket;/* [size_is(service_ticket_length),unique] */
+	uint32_t additional_ticket_length;
+	uint8_t *additional_ticket;/* [size_is(additional_ticket_length),unique] */
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 enum netr_LogonInfoClass
 #ifndef USE_UINT_ENUMS
@@ -125,10 +169,11 @@ enum netr_LogonInfoClass
 	NetlogonGenericInformation=(int)(4),
 	NetlogonInteractiveTransitiveInformation=(int)(5),
 	NetlogonNetworkTransitiveInformation=(int)(6),
-	NetlogonServiceTransitiveInformation=(int)(7)
+	NetlogonServiceTransitiveInformation=(int)(7),
+	NetlogonTicketLogonInformation=(int)(8)
 }
 #else
- { __do_not_use_enum_netr_LogonInfoClass=0x7FFFFFFF}
+ { __do_not_use_enum_netr_LogonInfoClass=INT_MAX}
 #define NetlogonInteractiveInformation ( 1 )
 #define NetlogonNetworkInformation ( 2 )
 #define NetlogonServiceInformation ( 3 )
@@ -136,6 +181,7 @@ enum netr_LogonInfoClass
 #define NetlogonInteractiveTransitiveInformation ( 5 )
 #define NetlogonNetworkTransitiveInformation ( 6 )
 #define NetlogonServiceTransitiveInformation ( 7 )
+#define NetlogonTicketLogonInformation ( 8 )
 #endif
 ;
 
@@ -143,14 +189,15 @@ union netr_LogonLevel {
 	struct netr_PasswordInfo *password;/* [case(NetlogonInteractiveInformation),unique] */
 	struct netr_NetworkInfo *network;/* [case(NetlogonNetworkInformation),unique] */
 	struct netr_GenericInfo *generic;/* [case(NetlogonGenericInformation),unique] */
+	struct netr_TicketLogonInfo *ticket;/* [case(NetlogonTicketLogonInformation),unique] */
 }/* [public,switch_type(netr_LogonInfoClass)] */;
 
 struct netr_UserSessionKey {
-	uint8_t key[16];
+	uint8_t key[16];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct netr_LMSessionKey {
-	uint8_t key[8];
+	uint8_t key[8];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 /* bitmap netr_UserFlags */
@@ -185,11 +232,11 @@ struct netr_SamBaseInfo {
 	uint32_t primary_gid;
 	struct samr_RidWithAttributeArray groups;
 	uint32_t user_flags;
-	struct netr_UserSessionKey key;/* [flag(LIBNDR_FLAG_IS_SECRET)] */
+	struct netr_UserSessionKey key;
 	struct lsa_StringLarge logon_server;
 	struct lsa_StringLarge logon_domain;
 	struct dom_sid2 *domain_sid;/* [unique] */
-	struct netr_LMSessionKey LMSessKey;/* [flag(LIBNDR_FLAG_IS_SECRET)] */
+	struct netr_LMSessionKey LMSessKey;
 	uint32_t acct_flags;
 	uint32_t sub_auth_status;
 	NTTIME last_successful_logon;
@@ -200,7 +247,7 @@ struct netr_SamBaseInfo {
 
 struct netr_SamInfo2 {
 	struct netr_SamBaseInfo base;
-};
+}/* [public] */;
 
 struct netr_SidAttr {
 	struct dom_sid2 *sid;/* [unique] */
@@ -220,7 +267,7 @@ struct netr_SamInfo6 {
 	struct lsa_String dns_domainname;
 	struct lsa_String principal_name;
 	uint32_t unknown4[20];
-};
+}/* [public] */;
 
 struct netr_PacInfo {
 	uint32_t pac_size;
@@ -236,12 +283,48 @@ struct netr_PacInfo {
 	struct lsa_String unknown2;
 	struct lsa_String unknown3;
 	struct lsa_String unknown4;
-};
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 struct netr_GenericInfo2 {
 	uint32_t length;
 	uint8_t *data;/* [size_is(length),unique] */
-}/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
+
+/* bitmap netr_TicketLogonResults */
+#define NETLOGON_TICKET_LOGON_CRITICAL_RESULTS ( 0x00000000000000FF )
+#define NETLOGON_TICKET_LOGON_FAILED_LOGON ( 0x0000000000000001 )
+#define NETLOGON_TICKET_LOGON_CRITICAL_CLIENT_RESULTS ( 0x000000000000FF00 )
+#define NETLOGON_TICKET_LOGON_CRITICAL_COMPUTER_DOMAIN_RESULTS ( 0x0000000000FF0000 )
+#define NETLOGON_TICKET_LOGON_CRITICAL_TRANSIT_RESULTS ( 0x00000000FF000000 )
+#define NETLOGON_TICKET_LOGON_SOURCE_INFORMATION ( 0x0000FFFF00000000 )
+#define NETLOGON_TICKET_LOGON_TICKET_DECRYPTION_FAILED ( 0x0000000100000000 )
+#define NETLOGON_TICKET_LOGON_PAC_VALIDATION_FAILED ( 0x0000000200000000 )
+#define NETLOGON_TICKET_LOGON_COMPOUND_SOURCE ( 0x0000000400000000 )
+#define NETLOGON_TICKET_LOGON_SOURCE_USER_CLAIMS ( 0x0000000800000000 )
+#define NETLOGON_TICKET_LOGON_SOURCE_DEVICE_CLAIMS ( 0x0000001000000000 )
+#define NETLOGON_TICKET_LOGON_FULL_SIGNATURE_PRESENT ( 0x0000002000000000 )
+#define NETLOGON_TICKET_LOGON_RESOURCE_GROUPS_REMOVED ( 0x0000004000000000 )
+#define NETLOGON_TICKET_LOGON_TRANSIT_INFORMATION ( 0xFFFF000000000000 )
+#define NETLOGON_TICKET_LOGON_USER_SIDS_FAILED ( 0x0001000000000000 )
+#define NETLOGON_TICKET_LOGON_USER_NAMESPACE_FAILED ( 0x0002000000000000 )
+#define NETLOGON_TICKET_LOGON_USER_FAILED_A2A ( 0x0004000000000000 )
+#define NETLOGON_TICKET_LOGON_DEVICE_SIDS_FAILED ( 0x0008000000000000 )
+#define NETLOGON_TICKET_LOGON_DEVICE_NAMESPACE_FAILED ( 0x0010000000000000 )
+#define NETLOGON_TICKET_LOGON_USER_SIDS_FILTERED ( 0x0020000000000000 )
+#define NETLOGON_TICKET_LOGON_DEVICE_SIDS_FILTERED ( 0x0040000000000000 )
+
+struct netr_ValidationTicketLogon {
+	uint64_t results;
+	NTSTATUS kerberos_status;
+	NTSTATUS netlogon_status;
+	struct lsa_String source_of_status;
+	struct netr_SamInfo6 *user_information;/* [unique] */
+	struct netr_SamInfo6 *device_information;/* [unique] */
+	uint32_t user_claims_length;
+	uint8_t *user_claims;/* [size_is(user_claims_length),unique] */
+	uint32_t device_claims_length;
+	uint8_t *device_claims;/* [size_is(device_claims_length),unique] */
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 enum netr_ValidationInfoClass
 #ifndef USE_UINT_ENUMS
@@ -250,15 +333,17 @@ enum netr_ValidationInfoClass
 	NetlogonValidationSamInfo=(int)(2),
 	NetlogonValidationSamInfo2=(int)(3),
 	NetlogonValidationGenericInfo2=(int)(5),
-	NetlogonValidationSamInfo4=(int)(6)
+	NetlogonValidationSamInfo4=(int)(6),
+	NetlogonValidationTicketLogon=(int)(7)
 }
 #else
- { __do_not_use_enum_netr_ValidationInfoClass=0x7FFFFFFF}
+ { __do_not_use_enum_netr_ValidationInfoClass=INT_MAX}
 #define NetlogonValidationUasInfo ( 1 )
 #define NetlogonValidationSamInfo ( 2 )
 #define NetlogonValidationSamInfo2 ( 3 )
 #define NetlogonValidationGenericInfo2 ( 5 )
 #define NetlogonValidationSamInfo4 ( 6 )
+#define NetlogonValidationTicketLogon ( 7 )
 #endif
 ;
 
@@ -268,11 +353,17 @@ union netr_Validation {
 	struct netr_PacInfo *pac;/* [case(4),unique] */
 	struct netr_GenericInfo2 *generic;/* [case(NetlogonValidationGenericInfo2),unique] */
 	struct netr_SamInfo6 *sam6;/* [case(NetlogonValidationSamInfo4),unique] */
+	struct netr_ValidationTicketLogon *ticket;/* [case(NetlogonValidationTicketLogon),unique] */
 }/* [public,switch_type(uint16)] */;
 
 struct netr_Credential {
 	uint8_t data[8];
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
+
+struct netlogon_server_pipe_state {
+	struct netr_Credential client_challenge;
+	struct netr_Credential server_challenge;
+}/* [public] */;
 
 struct netr_Authenticator {
 	struct netr_Credential cred;
@@ -572,7 +663,7 @@ enum netr_DeltaEnum
 	NETR_DELTA_MODIFY_COUNT=(int)(22)
 }
 #else
- { __do_not_use_enum_netr_DeltaEnum=0x7FFFFFFF}
+ { __do_not_use_enum_netr_DeltaEnum=INT_MAX}
 #define NETR_DELTA_DOMAIN ( 1 )
 #define NETR_DELTA_GROUP ( 2 )
 #define NETR_DELTA_DELETE_GROUP ( 3 )
@@ -709,7 +800,7 @@ enum netr_LogonControlCode
 	NETLOGON_CONTROL_BREAKPOINT=(int)(0x0000FFFF)
 }
 #else
- { __do_not_use_enum_netr_LogonControlCode=0x7FFFFFFF}
+ { __do_not_use_enum_netr_LogonControlCode=INT_MAX}
 #define NETLOGON_CONTROL_QUERY ( 0x00000001 )
 #define NETLOGON_CONTROL_REPLICATE ( 0x00000002 )
 #define NETLOGON_CONTROL_SYNCHRONIZE ( 0x00000003 )
@@ -762,6 +853,7 @@ union netr_CONTROL_DATA_INFORMATION {
 #define NETLOGON_NEG_SUPPORTS_AES ( 0x01000000 )
 #define NETLOGON_NEG_AUTHENTICATED_RPC_LSASS ( 0x20000000 )
 #define NETLOGON_NEG_AUTHENTICATED_RPC ( 0x40000000 )
+#define NETLOGON_NEG_SUPPORTS_KERBEROS_AUTH ( 0x80000000 )
 
 enum SyncStateEnum
 #ifndef USE_UINT_ENUMS
@@ -777,7 +869,7 @@ enum SyncStateEnum
 	SYNCSTATE_SAM_DONE_STATE=(int)(8)
 }
 #else
- { __do_not_use_enum_SyncStateEnum=0x7FFFFFFF}
+ { __do_not_use_enum_SyncStateEnum=INT_MAX}
 #define SYNCSTATE_NORMAL_STATE ( 0 )
 #define SYNCSTATE_DOMAIN_STATE ( 1 )
 #define SYNCSTATE_GROUP_STATE ( 2 )
@@ -836,6 +928,9 @@ struct netr_Blob {
 #define DS_TRY_NEXTCLOSEST_SITE ( 0x00040000 )
 #define DS_DIRECTORY_SERVICE_6_REQUIRED ( 0x00080000 )
 #define DS_WEB_SERVICE_REQUIRED ( 0x00100000 )
+#define DS_DIRECTORY_SERVICE_8_REQUIRED ( 0x00200000 )
+#define DS_DIRECTORY_SERVICE_9_REQUIRED ( 0x00400000 )
+#define DS_DIRECTORY_SERVICE_10_REQUIRED ( 0x00800000 )
 #define DS_RETURN_DNS_NAME ( 0x40000000 )
 #define DS_RETURN_FLAT_NAME ( 0x80000000 )
 
@@ -846,30 +941,11 @@ enum netr_DsRGetDCNameInfo_AddressType
 	DS_ADDRESS_TYPE_NETBIOS=(int)(2)
 }
 #else
- { __do_not_use_enum_netr_DsRGetDCNameInfo_AddressType=0x7FFFFFFF}
+ { __do_not_use_enum_netr_DsRGetDCNameInfo_AddressType=INT_MAX}
 #define DS_ADDRESS_TYPE_INET ( 1 )
 #define DS_ADDRESS_TYPE_NETBIOS ( 2 )
 #endif
 ;
-
-/* bitmap netr_DsR_DcFlags */
-#define DS_SERVER_PDC ( 0x00000001 )
-#define DS_SERVER_GC ( 0x00000004 )
-#define DS_SERVER_LDAP ( 0x00000008 )
-#define DS_SERVER_DS ( 0x00000010 )
-#define DS_SERVER_KDC ( 0x00000020 )
-#define DS_SERVER_TIMESERV ( 0x00000040 )
-#define DS_SERVER_CLOSEST ( 0x00000080 )
-#define DS_SERVER_WRITABLE ( 0x00000100 )
-#define DS_SERVER_GOOD_TIMESERV ( 0x00000200 )
-#define DS_SERVER_NDNC ( 0x00000400 )
-#define DS_SERVER_SELECT_SECRET_DOMAIN_6 ( 0x00000800 )
-#define DS_SERVER_FULL_SECRET_DOMAIN_6 ( 0x00001000 )
-#define DS_SERVER_WEBSERV ( 0x00002000 )
-#define DS_SERVER_DS_8 ( 0x00004000 )
-#define DS_DNS_CONTROLLER ( 0x20000000 )
-#define DS_DNS_DOMAIN ( 0x40000000 )
-#define DS_DNS_FOREST_ROOT ( 0x80000000 )
 
 struct netr_DsRGetDCNameInfo {
 	const char *dc_unc;/* [charset(UTF16),unique] */
@@ -885,6 +961,7 @@ struct netr_DsRGetDCNameInfo {
 
 union netr_Capabilities {
 	uint32_t server_capabilities;/* [case] */
+	uint32_t requested_flags;/* [case(2)] */
 }/* [switch_type(uint32)] */;
 
 /* bitmap netr_TrustFlags */
@@ -1039,9 +1116,9 @@ struct NL_PASSWORD_VERSION {
 };
 
 struct netr_CryptPassword {
-	uint8_t data[512];
+	uint8_t data[512];/* [flag(LIBNDR_FLAG_IS_SECRET)] */
 	uint32_t length;
-}/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX),public] */;
 
 enum netr_SendToSamType
 #ifndef USE_UINT_ENUMS
@@ -1053,7 +1130,7 @@ enum netr_SendToSamType
 	SendToSamResetSmartCardPassword=(int)(4)
 }
 #else
- { __do_not_use_enum_netr_SendToSamType=0x7FFFFFFF}
+ { __do_not_use_enum_netr_SendToSamType=INT_MAX}
 #define SendToSamUpdatePassword ( 0 )
 #define SendToSamResetBadPasswordCount ( 1 )
 #define SendToSamUpdatePasswordForward ( 2 )
@@ -1095,12 +1172,12 @@ struct netr_DomainTrust {
 	uint32_t trust_attributes;
 	struct dom_sid2 *sid;/* [unique] */
 	struct GUID guid;
-};
+}/* [public] */;
 
 struct netr_DomainTrustList {
 	uint32_t count;
 	struct netr_DomainTrust *array;/* [size_is(count),unique] */
-};
+}/* [public] */;
 
 struct netr_DsRAddressToSitenamesExWCtr {
 	uint32_t count;
@@ -1138,7 +1215,7 @@ enum netr_DnsType
 	NlDnsGenericGcAtSite=(int)(36)
 }
 #else
- { __do_not_use_enum_netr_DnsType=0x7FFFFFFF}
+ { __do_not_use_enum_netr_DnsType=INT_MAX}
 #define NlDnsLdapAtSite ( 22 )
 #define NlDnsGcAtSite ( 25 )
 #define NlDnsDsaCname ( 28 )
@@ -1161,7 +1238,7 @@ enum netr_DnsDomainInfoType
 	NlDnsRecordName=(int)(6)
 }
 #else
- { __do_not_use_enum_netr_DnsDomainInfoType=0x7FFFFFFF}
+ { __do_not_use_enum_netr_DnsDomainInfoType=INT_MAX}
 #define NlDnsInfoTypeNone ( 0 )
 #define NlDnsDomainName ( 1 )
 #define NlDnsDomainNameAlias ( 2 )
@@ -1730,7 +1807,7 @@ struct netr_NetrLogonSendToSam {
 		const char *server_name;/* [charset(UTF16),unique] */
 		const char *computer_name;/* [charset(UTF16),ref] */
 		struct netr_Authenticator *credential;/* [ref] */
-		uint8_t *opaque_buffer;/* [ref,size_is(buffer_len)] */
+		uint8_t *opaque_buffer;/* [flag(LIBNDR_FLAG_IS_SECRET),ref,size_is(buffer_len)] */
 		uint32_t buffer_len;
 	} in;
 
@@ -1990,6 +2067,77 @@ struct netr_DsrUpdateReadOnlyServerDnsRecords {
 	struct {
 		struct netr_Authenticator *return_authenticator;/* [ref] */
 		struct NL_DNS_NAME_INFO_ARRAY *dns_names;/* [ref] */
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct netr_Opnum49NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum50NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum51NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum52NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum53NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_ChainSetClientAttributes {
+	struct {
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct netr_Opnum55NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum56NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum57NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_Opnum58NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct netr_ServerAuthenticateKerberos {
+	struct {
+		const char *server_name;/* [charset(UTF16),unique] */
+		const char *account_name;/* [charset(UTF16),ref] */
+		enum netr_SchannelType account_type;
+		const char *computer_name;/* [charset(UTF16),ref] */
+		uint32_t *negotiate_flags;/* [ref] */
+	} in;
+
+	struct {
+		uint32_t *rid;/* [ref] */
+		uint32_t *negotiate_flags;/* [ref] */
 		NTSTATUS result;
 	} out;
 

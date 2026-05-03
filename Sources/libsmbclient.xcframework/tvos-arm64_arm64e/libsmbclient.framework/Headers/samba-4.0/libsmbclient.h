@@ -333,7 +333,7 @@ typedef struct _SMBCCTX SMBCCTX;
 /**@ingroup callback
  * Authentication callback function type (traditional method)
  *
- * Type for the the authentication function called by the library to
+ * Type for the authentication function called by the library to
  * obtain authentication credentials
  *
  * For kerberos support the function should just be called without
@@ -372,7 +372,7 @@ typedef void (*smbc_get_auth_data_fn)(const char *srv,
 /**@ingroup callback
  * Authentication callback function type (method that includes context)
  *
- * Type for the the authentication function called by the library to
+ * Type for the authentication function called by the library to
  * obtain authentication credentials
  *
  * For kerberos support the function should just be called without
@@ -490,7 +490,7 @@ typedef SMBCSRV * (*smbc_get_cached_srv_fn)   (SMBCCTX * c, const char * server,
                                                const char * username);
 
 /**@ingroup callback
- * Check if a server is still good
+ * Remove a cached server
  *
  * @param c         pointer to smb context
  *
@@ -588,7 +588,13 @@ smbc_getPort(SMBCCTX *c);
 void
 smbc_setPort(SMBCCTX *c, uint16_t port);
 
+/** Get whether to enable POSIX extensions if available */
+smbc_bool
+smbc_getOptionPosixExtensions(SMBCCTX *c);
 
+/** Set whether to enable POSIX extensions if available */
+void
+smbc_setOptionPosixExtensions(SMBCCTX *c, smbc_bool b);
 
 /***********************************
  * Getters and setters for OPTIONS *
@@ -836,7 +842,7 @@ smbc_setOptionUseNTHash(SMBCCTX *c, smbc_bool b);
 /**
  * @brief Set the 'client min protocol' and the 'client max protocol'.
  *
- * IMPORTANT: This overrrides the values 'client min protocol' and 'client max
+ * IMPORTANT: This overrides the values 'client min protocol' and 'client max
  * protocol' set in the smb.conf file!
  *
  * @param[in]  c  The smbc context to use.
@@ -1150,6 +1156,14 @@ typedef int (*smbc_getxattr_fn)(SMBCCTX *context,
 smbc_getxattr_fn smbc_getFunctionGetxattr(SMBCCTX *c);
 void smbc_setFunctionGetxattr(SMBCCTX *c, smbc_getxattr_fn fn);
 
+typedef int (*smbc_fgetxattr_fn)(SMBCCTX *context,
+				 SMBCFILE *file,
+				 const char *name,
+				 const void *value,
+				 size_t size);
+smbc_fgetxattr_fn smbc_getFunctionFGetxattr(SMBCCTX *c);
+void smbc_setFunctionFGetxattr(SMBCCTX *c, smbc_fgetxattr_fn fn);
+
 typedef int (*smbc_removexattr_fn)(SMBCCTX *context,
                                    const char *fname,
                                    const char *name);
@@ -1223,7 +1237,7 @@ SMBCCTX * smbc_new_context(void);
  * @param shutdown_ctx   If 1, all connections and files will be closed even if they are busy.
  *
  *
- * @return          Returns 0 on succes. Returns 1 on failure with errno set:
+ * @return          Returns 0 on success. Returns 1 on failure with errno set:
  *                  - EBUSY Server connections are still used, Files are open or cache
  *                          could not be purged
  *                  - EBADF context == NULL
@@ -1280,21 +1294,10 @@ SMBCCTX * smbc_init_context(SMBCCTX * context);
 /**@ingroup misc
  * Initialize the samba client library.
  *
- * Must be called before using any of the smbclient API function
- *
- * @param fn        The function that will be called to obtaion
- *                  authentication credentials.
- *
- * @param debug     Allows caller to set the debug level. Can be
- *                  changed in smb.conf file. Allows caller to set
- *                  debugging if no smb.conf.
- *
- * @return          0 on success, < 0 on error with errno set:
- *                  - ENOMEM Out of memory
- *                  - ENOENT The smb.conf file would not load
- *
+ * @deprecated use smbc_init_context()
+ * @see smbc_init_context()
  */
-
+DEPRECATED_SMBC_INTERFACE
 int smbc_init(smbc_get_auth_data_fn fn, int debug);
 
 /**@ingroup misc
@@ -1439,7 +1442,7 @@ ssize_t smbc_read(int fd, void *buf, size_t bufsize);
  *
  * @param fd        Open file handle from smbc_open() or smbc_creat()
  *
- * @param buf       Pointer to buffer to recieve read data
+ * @param buf       Pointer to buffer to receive read data
  *
  * @param bufsize   Size of buf in bytes
  *
@@ -1692,7 +1695,7 @@ const struct libsmb_file_info *smbc_readdirplus2(unsigned int dh,
  *
  * @return          The current location in the directory stream or -1
  *                  if an error occur.  The current location is not
- *                  an offset. Becuase of the implementation, it is a
+ *                  an offset. Because of the implementation, it is a
  *                  handle that allows the library to find the entry
  *                  later.
  *                  - EBADF dh is not a valid directory handle
@@ -1725,7 +1728,7 @@ off_t smbc_telldir(int dh);
  * @see             smbc_telldir()
  *
  *
- * @todo In what does the reture and errno values mean?
+ * @todo In what does the return and errno values mean?
  */
 int smbc_lseekdir(int fd, off_t offset);
 
@@ -1935,7 +1938,7 @@ int smbc_ftruncate(int fd, off_t size);
  *                  permissions of
  *
  * @param mode      The permissions to set:
- *                  - Put good explaination of permissions here!
+ *                  - Put good explanation of permissions here!
  *
  * @return          0 on success, < 0 on error with errno set:
  *                  - EPERM  The effective UID does not match the owner
@@ -1944,7 +1947,7 @@ int smbc_ftruncate(int fd, off_t size);
  *                  - ENOMEM Insufficient was available.
  *                  - ENOENT file or directory does not exist
  *
- * @todo Actually implement this fuction?
+ * @todo Actually implement this function?
  *
  * @todo Are errno values complete and correct?
  */
@@ -2419,7 +2422,7 @@ int smbc_getxattr(const char *url,
  *                  required to hold the attribute value will be returned,
  *                  but nothing will be placed into the value buffer.
  *
- * @return          0 on success, < 0 on error with errno set:
+ * @return          size on success, < 0 on error with errno set:
  *                  - EINVAL  The client library is not properly initialized
  *                            or one of the parameters is not of a correct
  *                            form
@@ -2474,6 +2477,31 @@ int smbc_lgetxattr(const char *url,
  *                  to names.  Without the plus sign, SIDs are not mapped;
  *                  rather they are simply converted to a string format.
  *
+ *                  When POSIX extensions are enabled (via
+ *                  smbc_setOptionPosixExtensions()), the following additional
+ *                  attribute names are available:
+ *
+ *                     posix.attr.enabled
+ *                        Returns "1" if POSIX extensions are active on the
+ *                        server connection, "0" otherwise. The value buffer
+ *                        must be at least 2 bytes to include the null
+ *                        terminator. The returned size is 1 (excluding the
+ *                        null terminator).
+ *                        This is only a check on internal structures, it
+ *                        doesn't produce any network traffic.
+ *
+ *                     smb311_posix.statinfo
+ *                        Returns POSIX stat information via a network call to
+ *                        the server. The value buffer must be at least
+ *                        sizeof(struct stat) + 4 bytes. The buffer contains a
+ *                        struct stat followed by 4 bytes of DOS attributes.
+ *                        The returned size is sizeof(struct stat), which
+ *                        should be used as the offset to read the DOS
+ *                        attributes from the buffer. This provides e.g the
+ *                        correct uid/gid on the server and hardlink counts
+ *                        (st_nlink) and other POSIX metadata not available
+ *                        through standard stat calls.
+ *
  * @param value     A pointer to a buffer in which the value of the specified
  *                  attribute will be placed (unless size is zero).
  *
@@ -2482,7 +2510,8 @@ int smbc_lgetxattr(const char *url,
  *                  required to hold the attribute value will be returned,
  *                  but nothing will be placed into the value buffer.
  *
- * @return          0 on success, < 0 on error with errno set:
+ * @return          On success, the number of bytes of the extended attribute
+ *                  returned. On error, -1 is returned with errno set:
  *                  - EINVAL  The client library is not properly initialized
  *                            or one of the parameters is not of a correct
  *                            form
@@ -2779,7 +2808,7 @@ int smbc_print_file(const char *fname, const char *printq);
  * @param fname     The URL of the print share to print to?
  *
  * @returns         A file handle for the print file if successful.
- *                  Returns -1 if an error ocurred and errno has the values
+ *                  Returns -1 if an error occurred and errno has the values
  *                  - EINVAL fname was NULL or smbc_init not called.
  *                  - all errors returned by smbc_open
  *
@@ -2821,7 +2850,7 @@ int smbc_unlink_print_job(const char *purl, int id);
  * @param srv        pointer to server to remove
  *
  * @return On success, 0 is returned. 1 is returned if the server could not
- *         be removed. Also useable outside libsmbclient.
+ *         be removed. Also usable outside libsmbclient.
  */
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 
@@ -2900,24 +2929,12 @@ smbc_version(void);
 #endif
 
 /**@ingroup misc
- * Set the users credentials globally so they can be used for DFS
- * referrals. Probably best to use this function in the smbc_get_auth_data_fn
- * callback.
+ * @deprecated This interface has been deprecated use
+ * smbc_set_credentials_with_fallback() instead.
  *
- * @param workgroup      Workgroup of the user.
- *
- * @param user           Username of user.
- *
- * @param password       Password of user.
- *
- * @param use_kerberos   Whether to use Kerberos
- *
- * @param signing_state  One of these strings (all equivalents on same line):
- *                         "off", "no", "false"
- *                         "on", "yes", "true", "auto"
- *                         "force", "required", "forced"
+ * @see smbc_set_credentials_with_fallback()
  */
-
+DEPRECATED_SMBC_INTERFACE
 void
 smbc_set_credentials(const char *workgroup,
                      const char *user,
@@ -2925,13 +2942,20 @@ smbc_set_credentials(const char *workgroup,
                      smbc_bool use_kerberos,
                      const char *signing_state);
 
-/*
- * Wrapper around smbc_set_credentials.
- * Used to set correct credentials that will
- * be used to connect to DFS target share
- * in libsmbclient
+/**@ingroup misc
+ *
+ * Set the users credentials globally so they can be used for DFS
+ * referrals. Probably best to use this function in the smbc_get_auth_data_fn
+ * callback.
+ *
+ * @param ctx            The smb context.
+ *
+ * @param workgroup      Workgroup of the user.
+ *
+ * @param user           Username of user.
+ *
+ * @param password       Password of user.
  */
-
 void
 smbc_set_credentials_with_fallback(SMBCCTX *ctx,
 		                   const char *workgroup,
@@ -2978,7 +3002,7 @@ smbc_thread_posix(void);
  *
  * @param lock_mutex
  *   Lock a mutex. This function should expect three parameters: plock,
- *   lock_type, and location. The mutex aassociated with identifier plock
+ *   lock_type, and location. The mutex associated with identifier plock
  *   should be locked if lock_type is 1, and unlocked if lock_type is 2. The
  *   location parameter can be used for debugging, as it contains the
  *   compiler-provided __location__ of the call.

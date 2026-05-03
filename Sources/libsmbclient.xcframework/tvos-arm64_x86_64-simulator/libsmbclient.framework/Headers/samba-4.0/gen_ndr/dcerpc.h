@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/misc.h>
 extern const uint8_t DCERPC_SEC_VT_MAGIC[8];
@@ -61,8 +60,8 @@ struct dcerpc_empty {
 };
 
 union dcerpc_object {
-	struct GUID object;/* [case(LIBNDR_FLAG_OBJECT_PRESENT)] */
-	struct dcerpc_empty empty;/* [default] */
+	struct GUID object;/* [default] */
+	struct dcerpc_empty empty;/* [case(false)] */
 }/* [nodiscriminant] */;
 
 struct dcerpc_request {
@@ -82,7 +81,7 @@ enum dcerpc_bind_ack_result
 	DCERPC_BIND_ACK_RESULT_NEGOTIATE_ACK=(int)(3)
 }
 #else
- { __do_not_use_enum_dcerpc_bind_ack_result=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_bind_ack_result=INT_MAX}
 #define DCERPC_BIND_ACK_RESULT_ACCEPTANCE ( 0 )
 #define DCERPC_BIND_ACK_RESULT_USER_REJECTION ( 1 )
 #define DCERPC_BIND_ACK_RESULT_PROVIDER_REJECTION ( 2 )
@@ -99,7 +98,7 @@ enum dcerpc_bind_ack_reason_values
 	DCERPC_BIND_ACK_REASON_LOCAL_LIMIT_EXCEEDED=(int)(3)
 }
 #else
- { __do_not_use_enum_dcerpc_bind_ack_reason_values=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_bind_ack_reason_values=INT_MAX}
 #define DCERPC_BIND_ACK_REASON_NOT_SPECIFIED ( 0 )
 #define DCERPC_BIND_ACK_REASON_ABSTRACT_SYNTAX_NOT_SUPPORTED ( 1 )
 #define DCERPC_BIND_ACK_REASON_TRANSFER_SYNTAXES_NOT_SUPPORTED ( 2 )
@@ -145,7 +144,7 @@ enum dcerpc_bind_nak_reason
 	DCERPC_BIND_NAK_REASON_INVALID_CHECKSUM=(int)(9)
 }
 #else
- { __do_not_use_enum_dcerpc_bind_nak_reason=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_bind_nak_reason=INT_MAX}
 #define DCERPC_BIND_NAK_REASON_NOT_SPECIFIED ( 0 )
 #define DCERPC_BIND_NAK_REASON_TEMPORARY_CONGESTION ( 1 )
 #define DCERPC_BIND_NAK_REASON_LOCAL_LIMIT_EXCEEDED ( 2 )
@@ -234,7 +233,7 @@ enum dcerpc_nca_status
 	DCERPC_FAULT_SEC_PKG_ERROR=(int)(0x00000721)
 }
 #else
- { __do_not_use_enum_dcerpc_nca_status=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_nca_status=INT_MAX}
 #define DCERPC_NCA_S_COMM_FAILURE ( 0x1C010001 )
 #define DCERPC_NCA_S_OP_RNG_ERROR ( 0x1C010002 )
 #define DCERPC_NCA_S_UNKNOWN_IF ( 0x1C010003 )
@@ -321,7 +320,7 @@ enum dcerpc_AuthType
 	DCERPC_AUTH_TYPE_NCALRPC_AS_SYSTEM=(int)(200)
 }
 #else
- { __do_not_use_enum_dcerpc_AuthType=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_AuthType=INT_MAX}
 #define DCERPC_AUTH_TYPE_NONE ( 0 )
 #define DCERPC_AUTH_TYPE_KRB5_1 ( 1 )
 #define DCERPC_AUTH_TYPE_SPNEGO ( 9 )
@@ -347,7 +346,7 @@ enum dcerpc_AuthLevel
 	DCERPC_AUTH_LEVEL_PRIVACY=(int)(6)
 }
 #else
- { __do_not_use_enum_dcerpc_AuthLevel=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_AuthLevel=INT_MAX}
 #define DCERPC_AUTH_LEVEL_NONE ( 1 )
 #define DCERPC_AUTH_LEVEL_CONNECT ( 2 )
 #define DCERPC_AUTH_LEVEL_CALL ( 3 )
@@ -372,12 +371,10 @@ struct dcerpc_auth3 {
 }/* [public] */;
 
 struct dcerpc_orphaned {
-	uint32_t _pad;/* [value(0)] */
 	DATA_BLOB auth_info;/* [flag(LIBNDR_FLAG_REMAINING)] */
 }/* [public] */;
 
 struct dcerpc_co_cancel {
-	uint32_t _pad;/* [value(0)] */
 	DATA_BLOB auth_info;/* [flag(LIBNDR_FLAG_REMAINING)] */
 }/* [public] */;
 
@@ -430,7 +427,7 @@ enum AddressType
 	RTS_IPV6=(int)(1)
 }
 #else
- { __do_not_use_enum_AddressType=0x7FFFFFFF}
+ { __do_not_use_enum_AddressType=INT_MAX}
 #define RTS_IPV4 ( 0 )
 #define RTS_IPV6 ( 1 )
 #endif
@@ -456,7 +453,7 @@ enum ForwardDestination
 	FDOutProxy=(int)(3)
 }
 #else
- { __do_not_use_enum_ForwardDestination=0x7FFFFFFF}
+ { __do_not_use_enum_ForwardDestination=INT_MAX}
 #define FDClient ( 0 )
 #define FDInProxy ( 1 )
 #define FDServer ( 2 )
@@ -596,7 +593,7 @@ enum dcerpc_pkt_type
 	DCERPC_PKT_RTS=(int)(20)
 }
 #else
- { __do_not_use_enum_dcerpc_pkt_type=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_pkt_type=INT_MAX}
 #define DCERPC_PKT_REQUEST ( 0 )
 #define DCERPC_PKT_PING ( 1 )
 #define DCERPC_PKT_RESPONSE ( 2 )
@@ -702,7 +699,7 @@ enum dcerpc_sec_vt_command_enum
 	DCERPC_SEC_VT_COMMAND_HEADER2=(int)(0x0003)
 }
 #else
- { __do_not_use_enum_dcerpc_sec_vt_command_enum=0x7FFFFFFF}
+ { __do_not_use_enum_dcerpc_sec_vt_command_enum=INT_MAX}
 #define DCERPC_SEC_VT_COMMAND_BITMASK1 ( 0x0001 )
 #define DCERPC_SEC_VT_COMMAND_PCONTEXT ( 0x0002 )
 #define DCERPC_SEC_VT_COMMAND_HEADER2 ( 0x0003 )

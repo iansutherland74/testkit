@@ -29,7 +29,7 @@
 #define Sixteenth ( 0x00008000 )
 #define Seventeenth ( 0x00010000 )
 #define Eighteenth ( 0x00020000 )
-#define Ninteenth ( 0x00040000 )
+#define Nineteenth ( 0x00040000 )
 #define Twentyth ( 0x00080000 )
 #define Twentyfirst ( 0x00100000 )
 #define Twentysecond ( 0x00200000 )

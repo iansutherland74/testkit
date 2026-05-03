@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/security.h>
 #include <gen_ndr/lsa.h>
@@ -14,6 +13,9 @@
 #ifndef _HEADER_krb5pac
 #define _HEADER_krb5pac
 
+#define PAC_TYPE_BEGIN	( 1 )
+#define PAC_TYPE_END	( 20 )
+#define PAC_TYPE_COUNT	( PAC_TYPE_END-PAC_TYPE_BEGIN )
 #define NETLOGON_GENERIC_KRB5_PAC_VALIDATE	( 3 )
 struct PAC_LOGON_NAME {
 	NTTIME logon_time;
@@ -123,6 +125,21 @@ struct PAC_CONSTRAINED_DELEGATION_CTR {
 	struct PAC_CONSTRAINED_DELEGATION *info;/* [unique] */
 }/* [public] */;
 
+struct PAC_DEVICE_INFO {
+	uint32_t rid;
+	uint32_t primary_gid;
+	struct dom_sid2 *domain_sid;/* [unique] */
+	struct samr_RidWithAttributeArray groups;
+	uint32_t sid_count;
+	struct netr_SidAttr *sids;/* [size_is(sid_count),unique] */
+	uint32_t domain_group_count;
+	struct PAC_DOMAIN_GROUP_MEMBERSHIP *domain_groups;/* [size_is(domain_group_count),unique] */
+};
+
+struct PAC_DEVICE_INFO_CTR {
+	struct PAC_DEVICE_INFO *info;/* [unique] */
+};
+
 enum PAC_TYPE
 #ifndef USE_UINT_ENUMS
  {
@@ -142,7 +159,7 @@ enum PAC_TYPE
 	PAC_TYPE_FULL_CHECKSUM=(int)(19)
 }
 #else
- { __do_not_use_enum_PAC_TYPE=0x7FFFFFFF}
+ { __do_not_use_enum_PAC_TYPE=INT_MAX}
 #define PAC_TYPE_LOGON_INFO ( 1 )
 #define PAC_TYPE_CREDENTIAL_INFO ( 2 )
 #define PAC_TYPE_SRV_CHECKSUM ( 6 )
@@ -175,6 +192,9 @@ union PAC_INFO {
 	struct PAC_SIGNATURE_DATA ticket_checksum;/* [case(PAC_TYPE_TICKET_CHECKSUM)] */
 	struct PAC_ATTRIBUTES_INFO attributes_info;/* [case(PAC_TYPE_ATTRIBUTES_INFO)] */
 	struct PAC_REQUESTER_SID requester_sid;/* [case(PAC_TYPE_REQUESTER_SID)] */
+	struct DATA_BLOB_REM client_claims_info;/* [case(PAC_TYPE_CLIENT_CLAIMS_INFO),subcontext(0)] */
+	struct PAC_DEVICE_INFO_CTR device_info;/* [case(PAC_TYPE_DEVICE_INFO),subcontext(0xFFFFFC01)] */
+	struct DATA_BLOB_REM device_claims_info;/* [case(PAC_TYPE_DEVICE_CLAIMS_INFO),subcontext(0)] */
 	struct PAC_SIGNATURE_DATA full_checksum;/* [case(PAC_TYPE_FULL_CHECKSUM)] */
 	struct DATA_BLOB_REM unknown;/* [default,subcontext(0)] */
 }/* [gensize,nodiscriminant,public] */;

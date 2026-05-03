@@ -34,6 +34,8 @@
 #define LSA_TLN_DISABLED_MASK	( (LSA_TLN_DISABLED_NEW|LSA_TLN_DISABLED_ADMIN|LSA_TLN_DISABLED_CONFLICT) )
 #define LSA_SID_DISABLED_MASK	( (LSA_SID_DISABLED_ADMIN|LSA_SID_DISABLED_CONFLICT) )
 #define LSA_NB_DISABLED_MASK	( (LSA_NB_DISABLED_ADMIN|LSA_NB_DISABLED_CONFLICT) )
+#define LSA_FOREST_TRUST_RECORD_TYPE_LAST	( LSA_FOREST_TRUST_BINARY_DATA )
+#define LSA_FOREST_TRUST_RECORD2_TYPE_LAST	( LSA_FOREST_TRUST_SCANNER_INFO )
 #define LSA_CLIENT_REVISION_NO_DNS	( 0x00000001 )
 #define LSA_CLIENT_REVISION_DNS	( 0x00000002 )
 #define LSA_LOOKUP_OPTIONS_NO_ISOLATED	( 0x80000000 )
@@ -87,9 +89,26 @@ struct lsa_PrivArray {
 	struct lsa_PrivEntry *privs;/* [size_is(count),unique] */
 };
 
+enum lsa_SecurityImpersonationLevel
+#ifndef USE_UINT_ENUMS
+ {
+	LSA_SECURITY_ANONYMOUS=(int)(0),
+	LSA_SECURITY_IDENTIFICATION=(int)(1),
+	LSA_SECURITY_IMPERSONATION=(int)(2),
+	LSA_SECURITY_DELEGATION=(int)(3)
+}
+#else
+ { __do_not_use_enum_lsa_SecurityImpersonationLevel=INT_MAX}
+#define LSA_SECURITY_ANONYMOUS ( 0 )
+#define LSA_SECURITY_IDENTIFICATION ( 1 )
+#define LSA_SECURITY_IMPERSONATION ( 2 )
+#define LSA_SECURITY_DELEGATION ( 3 )
+#endif
+;
+
 struct lsa_QosInfo {
 	uint32_t len;
-	uint16_t impersonation_level;
+	enum lsa_SecurityImpersonationLevel impersonation_level;
 	uint8_t context_mode;
 	uint8_t effective_only;
 };
@@ -156,7 +175,7 @@ enum lsa_PolicyAuditPolicy
 	LSA_AUDIT_POLICY_CLEAR=(int)(4)
 }
 #else
- { __do_not_use_enum_lsa_PolicyAuditPolicy=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_PolicyAuditPolicy=INT_MAX}
 #define LSA_AUDIT_POLICY_NONE ( 0 )
 #define LSA_AUDIT_POLICY_SUCCESS ( 1 )
 #define LSA_AUDIT_POLICY_FAILURE ( 2 )
@@ -179,7 +198,7 @@ enum lsa_PolicyAuditEventType
 	LSA_AUDIT_CATEGORY_ACCOUNT_LOGON=(int)(8)
 }
 #else
- { __do_not_use_enum_lsa_PolicyAuditEventType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_PolicyAuditEventType=INT_MAX}
 #define LSA_AUDIT_CATEGORY_SYSTEM ( 0 )
 #define LSA_AUDIT_CATEGORY_LOGON ( 1 )
 #define LSA_AUDIT_CATEGORY_FILE_AND_OBJECT_ACCESS ( 2 )
@@ -214,7 +233,7 @@ enum lsa_Role
 	LSA_ROLE_PRIMARY=(int)(3)
 }
 #else
- { __do_not_use_enum_lsa_Role=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_Role=INT_MAX}
 #define LSA_ROLE_BACKUP ( 2 )
 #define LSA_ROLE_PRIMARY ( 3 )
 #endif
@@ -279,7 +298,7 @@ enum lsa_PolicyInfo
 	LSA_POLICY_INFO_L_ACCOUNT_DOMAIN=(int)(14)
 }
 #else
- { __do_not_use_enum_lsa_PolicyInfo=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_PolicyInfo=INT_MAX}
 #define LSA_POLICY_INFO_AUDIT_LOG ( 1 )
 #define LSA_POLICY_INFO_AUDIT_EVENTS ( 2 )
 #define LSA_POLICY_INFO_DOMAIN ( 3 )
@@ -310,6 +329,7 @@ union lsa_PolicyInformation {
 	struct lsa_AuditFullSetInfo auditfullset;/* [case(LSA_POLICY_INFO_AUDIT_FULL_SET)] */
 	struct lsa_AuditFullQueryInfo auditfullquery;/* [case(LSA_POLICY_INFO_AUDIT_FULL_QUERY)] */
 	struct lsa_DnsDomainInfo dns;/* [case(LSA_POLICY_INFO_DNS)] */
+	struct lsa_DnsDomainInfo dns_int;/* [case(LSA_POLICY_INFO_DNS_INT)] */
 	struct lsa_DomainInfo l_account_domain;/* [case(LSA_POLICY_INFO_L_ACCOUNT_DOMAIN)] */
 }/* [switch_type(uint16)] */;
 
@@ -343,7 +363,7 @@ enum lsa_SidType
 	SID_NAME_LABEL=(int)(10)
 }
 #else
- { __do_not_use_enum_lsa_SidType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_SidType=INT_MAX}
 #define SID_NAME_USE_NONE ( 0 )
 #define SID_NAME_USER ( 1 )
 #define SID_NAME_DOM_GRP ( 2 )
@@ -387,7 +407,7 @@ enum lsa_LookupNamesLevel
 	LSA_LOOKUP_NAMES_RODC_REFERRAL_TO_FULL_DC=(int)(7)
 }
 #else
- { __do_not_use_enum_lsa_LookupNamesLevel=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_LookupNamesLevel=INT_MAX}
 #define LSA_LOOKUP_NAMES_ALL ( 1 )
 #define LSA_LOOKUP_NAMES_DOMAINS_ONLY ( 2 )
 #define LSA_LOOKUP_NAMES_PRIMARY_DOMAIN_ONLY ( 3 )
@@ -446,10 +466,12 @@ enum lsa_TrustDomInfoEnum
 	LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_INTERNAL=(int)(10),
 	LSA_TRUSTED_DOMAIN_INFO_INFO_EX2_INTERNAL=(int)(11),
 	LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_2_INTERNAL=(int)(12),
-	LSA_TRUSTED_DOMAIN_SUPPORTED_ENCRYPTION_TYPES=(int)(13)
+	LSA_TRUSTED_DOMAIN_SUPPORTED_ENCRYPTION_TYPES=(int)(13),
+	LSA_TRUSTED_DOMAIN_INFO_AUTH_INFO_INTERNAL_AES=(int)(14),
+	LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_INTERNAL_AES=(int)(15)
 }
 #else
- { __do_not_use_enum_lsa_TrustDomInfoEnum=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_TrustDomInfoEnum=INT_MAX}
 #define LSA_TRUSTED_DOMAIN_INFO_NAME ( 1 )
 #define LSA_TRUSTED_DOMAIN_INFO_CONTROLLERS ( 2 )
 #define LSA_TRUSTED_DOMAIN_INFO_POSIX_OFFSET ( 3 )
@@ -463,6 +485,8 @@ enum lsa_TrustDomInfoEnum
 #define LSA_TRUSTED_DOMAIN_INFO_INFO_EX2_INTERNAL ( 11 )
 #define LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_2_INTERNAL ( 12 )
 #define LSA_TRUSTED_DOMAIN_SUPPORTED_ENCRYPTION_TYPES ( 13 )
+#define LSA_TRUSTED_DOMAIN_INFO_AUTH_INFO_INTERNAL_AES ( 14 )
+#define LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_INTERNAL_AES ( 15 )
 #endif
 ;
 
@@ -479,7 +503,7 @@ enum lsa_TrustType
 	LSA_TRUST_TYPE_DCE=(int)(0x00000004)
 }
 #else
- { __do_not_use_enum_lsa_TrustType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_TrustType=INT_MAX}
 #define LSA_TRUST_TYPE_DOWNLEVEL ( 0x00000001 )
 #define LSA_TRUST_TYPE_UPLEVEL ( 0x00000002 )
 #define LSA_TRUST_TYPE_MIT ( 0x00000003 )
@@ -541,7 +565,7 @@ enum lsa_TrustAuthType
 	TRUST_AUTH_TYPE_VERSION=(int)(3)
 }
 #else
- { __do_not_use_enum_lsa_TrustAuthType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_TrustAuthType=INT_MAX}
 #define TRUST_AUTH_TYPE_NONE ( 0 )
 #define TRUST_AUTH_TYPE_NT4OWF ( 1 )
 #define TRUST_AUTH_TYPE_CLEAR ( 2 )
@@ -580,6 +604,18 @@ struct lsa_TrustDomainInfoFullInfoInternal {
 	struct lsa_TrustDomainInfoAuthInfoInternal auth_info;
 };
 
+struct lsa_TrustDomainInfoAuthInfoInternalAES {
+	uint8_t auth_data[64];
+	uint8_t salt[16];
+	struct lsa_DATA_BUF2 cipher;
+};
+
+struct lsa_TrustDomainInfoFullInfoInternalAES {
+	struct lsa_TrustDomainInfoInfoEx info_ex;
+	struct lsa_TrustDomainInfoPosixOffset posix_offset;
+	struct lsa_TrustDomainInfoAuthInfoInternalAES auth_info;
+};
+
 struct lsa_TrustDomainInfoInfoEx2Internal {
 	struct lsa_TrustDomainInfoInfoEx info_ex;
 	uint32_t forest_trust_length;
@@ -610,6 +646,8 @@ union lsa_TrustedDomainInfo {
 	struct lsa_TrustDomainInfoInfoEx2Internal info_ex2_internal;/* [case(LSA_TRUSTED_DOMAIN_INFO_INFO_EX2_INTERNAL)] */
 	struct lsa_TrustDomainInfoFullInfo2Internal full_info2_internal;/* [case(LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_2_INTERNAL)] */
 	struct lsa_TrustDomainInfoSupportedEncTypes enc_types;/* [case(LSA_TRUSTED_DOMAIN_SUPPORTED_ENCRYPTION_TYPES)] */
+	struct lsa_TrustDomainInfoAuthInfoInternalAES auth_info_internal_aes;/* [case(LSA_TRUSTED_DOMAIN_INFO_AUTH_INFO_INTERNAL_AES)] */
+	struct lsa_TrustDomainInfoFullInfoInternalAES full_info_internal_aes;/* [case(LSA_TRUSTED_DOMAIN_INFO_FULL_INFO_INTERNAL_AES)] */
 }/* [switch_type(lsa_TrustDomInfoEnum)] */;
 
 struct lsa_DATA_BUF_PTR {
@@ -628,6 +666,10 @@ struct lsa_RightSet {
 struct lsa_DomainListEx {
 	uint32_t count;
 	struct lsa_TrustDomainInfoInfoEx *domains;/* [size_is(count),unique] */
+};
+
+struct lsa_DomainInfoQoS {
+	uint32_t quality_of_service;
 };
 
 /* bitmap lsa_krbAuthenticationOptions */
@@ -650,20 +692,23 @@ struct lsa_DomainInfoEfs {
 enum lsa_DomainInfoEnum
 #ifndef USE_UINT_ENUMS
  {
+	LSA_DOMAIN_INFO_POLICY_QOS=(int)(1),
 	LSA_DOMAIN_INFO_POLICY_EFS=(int)(2),
 	LSA_DOMAIN_INFO_POLICY_KERBEROS=(int)(3)
 }
 #else
- { __do_not_use_enum_lsa_DomainInfoEnum=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_DomainInfoEnum=INT_MAX}
+#define LSA_DOMAIN_INFO_POLICY_QOS ( 1 )
 #define LSA_DOMAIN_INFO_POLICY_EFS ( 2 )
 #define LSA_DOMAIN_INFO_POLICY_KERBEROS ( 3 )
 #endif
 ;
 
 union lsa_DomainInformationPolicy {
+	struct lsa_DomainInfoQoS qos_info;/* [case(LSA_DOMAIN_INFO_POLICY_QOS)] */
 	struct lsa_DomainInfoEfs efs_info;/* [case(LSA_DOMAIN_INFO_POLICY_EFS)] */
 	struct lsa_DomainInfoKerberos kerberos_info;/* [case(LSA_DOMAIN_INFO_POLICY_KERBEROS)] */
-}/* [switch_type(uint16)] */;
+}/* [switch_type(lsa_DomainInfoEnum)] */;
 
 struct lsa_TranslatedName2 {
 	enum lsa_SidType sid_type;
@@ -684,7 +729,7 @@ enum lsa_LookupOptions
 	LSA_LOOKUP_OPTION_SEARCH_ISOLATED_NAMES_LOCAL=(int)(0x80000000)
 }
 #else
- { __do_not_use_enum_lsa_LookupOptions=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_LookupOptions=INT_MAX}
 #define LSA_LOOKUP_OPTION_SEARCH_ISOLATED_NAMES ( 0x00000000 )
 #define LSA_LOOKUP_OPTION_SEARCH_ISOLATED_NAMES_LOCAL ( 0x80000000 )
 #endif
@@ -697,7 +742,7 @@ enum lsa_ClientRevision
 	LSA_CLIENT_REVISION_2=(int)(0x00000002)
 }
 #else
- { __do_not_use_enum_lsa_ClientRevision=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_ClientRevision=INT_MAX}
 #define LSA_CLIENT_REVISION_1 ( 0x00000001 )
 #define LSA_CLIENT_REVISION_2 ( 0x00000002 )
 #endif
@@ -742,14 +787,16 @@ enum lsa_ForestTrustRecordType
 	LSA_FOREST_TRUST_TOP_LEVEL_NAME=(int)(0),
 	LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX=(int)(1),
 	LSA_FOREST_TRUST_DOMAIN_INFO=(int)(2),
-	LSA_FOREST_TRUST_RECORD_TYPE_LAST=(int)(3)
+	LSA_FOREST_TRUST_BINARY_DATA=(int)(3),
+	LSA_FOREST_TRUST_SCANNER_INFO=(int)(4)
 }
 #else
- { __do_not_use_enum_lsa_ForestTrustRecordType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_ForestTrustRecordType=INT_MAX}
 #define LSA_FOREST_TRUST_TOP_LEVEL_NAME ( 0 )
 #define LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX ( 1 )
 #define LSA_FOREST_TRUST_DOMAIN_INFO ( 2 )
-#define LSA_FOREST_TRUST_RECORD_TYPE_LAST ( 3 )
+#define LSA_FOREST_TRUST_BINARY_DATA ( 3 )
+#define LSA_FOREST_TRUST_SCANNER_INFO ( 4 )
 #endif
 ;
 
@@ -791,7 +838,7 @@ enum lsa_ForestTrustCollisionRecordType
 	LSA_FOREST_TRUST_COLLISION_OTHER=(int)(2)
 }
 #else
- { __do_not_use_enum_lsa_ForestTrustCollisionRecordType=0x7FFFFFFF}
+ { __do_not_use_enum_lsa_ForestTrustCollisionRecordType=INT_MAX}
 #define LSA_FOREST_TRUST_COLLISION_TDO ( 0 )
 #define LSA_FOREST_TRUST_COLLISION_XREF ( 1 )
 #define LSA_FOREST_TRUST_COLLISION_OTHER ( 2 )
@@ -808,6 +855,38 @@ struct lsa_ForestTrustCollisionRecord {
 struct lsa_ForestTrustCollisionInfo {
 	uint32_t count;
 	struct lsa_ForestTrustCollisionRecord **entries;/* [size_is(count),unique] */
+}/* [public] */;
+
+/* bitmap lsa_RevisionSupportedFeature */
+#define LSA_FEATURE_TDO_AUTH_INFO_AES_CIPHER ( 0x00000001 )
+
+struct lsa_revision_info1 {
+	uint32_t revision;
+	uint32_t supported_features;
+};
+
+union lsa_revision_info {
+	struct lsa_revision_info1 info1;/* [case] */
+}/* [switch_type(uint32)] */;
+
+union lsa_ForestTrustData2 {
+	struct lsa_StringLarge top_level_name;/* [case(LSA_FOREST_TRUST_TOP_LEVEL_NAME)] */
+	struct lsa_StringLarge top_level_name_ex;/* [case(LSA_FOREST_TRUST_TOP_LEVEL_NAME_EX)] */
+	struct lsa_ForestTrustDomainInfo domain_info;/* [case(LSA_FOREST_TRUST_DOMAIN_INFO)] */
+	struct lsa_ForestTrustBinaryData data;/* [case(LSA_FOREST_TRUST_BINARY_DATA)] */
+	struct lsa_ForestTrustDomainInfo scanner_info;/* [case(LSA_FOREST_TRUST_SCANNER_INFO)] */
+}/* [switch_type(lsa_ForestTrustRecordType)] */;
+
+struct lsa_ForestTrustRecord2 {
+	uint32_t flags;
+	enum lsa_ForestTrustRecordType type;
+	NTTIME time;
+	union lsa_ForestTrustData2 forest_trust_data;/* [switch_is(type)] */
+};
+
+struct lsa_ForestTrustInformation2 {
+	uint32_t count;/* [range(0,4000)] */
+	struct lsa_ForestTrustRecord2 **entries;/* [size_is(count),unique] */
 }/* [public] */;
 
 
@@ -1568,7 +1647,7 @@ struct lsa_CloseTrustedDomainEx {
 struct lsa_QueryDomainInformationPolicy {
 	struct {
 		struct policy_handle *handle;/* [ref] */
-		uint16_t level;
+		enum lsa_DomainInfoEnum level;
 	} in;
 
 	struct {
@@ -1582,7 +1661,7 @@ struct lsa_QueryDomainInformationPolicy {
 struct lsa_SetDomainInformationPolicy {
 	struct {
 		struct policy_handle *handle;/* [ref] */
-		uint16_t level;
+		enum lsa_DomainInfoEnum level;
 		union lsa_DomainInformationPolicy *info;/* [switch_is(level),unique] */
 	} in;
 
@@ -1900,6 +1979,313 @@ struct lsa_LSARADTUNREGISTERSECURITYEVENTSOURCE {
 
 struct lsa_LSARADTREPORTSECURITYEVENT {
 	struct {
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct lsa_Opnum82NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum83NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum84NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum85NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum86NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum87NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum88NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum89NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum90NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum91NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum92NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum93NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum94NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum95NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum96NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum97NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum98NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum99NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum100NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum101NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum102NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum103NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum104NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum105NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum106NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum107NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum108NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum109NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum110NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum111NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum112NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum113NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum114NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum115NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum116NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum117NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum118NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum119NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum120NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum121NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum122NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum123NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum124NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum125NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum126NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum127NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_Opnum128NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_CreateTrustedDomainEx3 {
+	struct {
+		struct policy_handle *policy_handle;/* [ref] */
+		struct lsa_TrustDomainInfoInfoEx *info;/* [ref] */
+		struct lsa_TrustDomainInfoAuthInfoInternalAES *auth_info_internal;/* [ref] */
+		uint32_t access_mask;
+	} in;
+
+	struct {
+		struct policy_handle *trustdom_handle;/* [ref] */
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct lsa_OpenPolicy3 {
+	struct {
+		const char *system_name;/* [charset(UTF16),unique] */
+		struct lsa_ObjectAttribute *attr;/* [ref] */
+		uint32_t access_mask;
+		uint32_t in_version;
+		union lsa_revision_info *in_revision_info;/* [ref,switch_is(in_version)] */
+	} in;
+
+	struct {
+		uint32_t *out_version;/* [ref] */
+		union lsa_revision_info *out_revision_info;/* [ref,switch_is(*out_version)] */
+		struct policy_handle *handle;/* [ref] */
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct lsa_Opnum131NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct lsa_lsaRQueryForestTrustInformation2 {
+	struct {
+		struct policy_handle *handle;/* [ref] */
+		struct lsa_String *trusted_domain_name;/* [ref] */
+		enum lsa_ForestTrustRecordType highest_record_type;
+	} in;
+
+	struct {
+		struct lsa_ForestTrustInformation2 **forest_trust_info;/* [ref] */
+		NTSTATUS result;
+	} out;
+
+};
+
+
+struct lsa_lsaRSetForestTrustInformation2 {
+	struct {
+		struct policy_handle *handle;/* [ref] */
+		struct lsa_StringLarge *trusted_domain_name;/* [ref] */
+		enum lsa_ForestTrustRecordType highest_record_type;
+		struct lsa_ForestTrustInformation2 *forest_trust_info;/* [ref] */
+		uint8_t check_only;
+	} in;
+
+	struct {
+		struct lsa_ForestTrustCollisionInfo **collision_info;/* [ref] */
 		NTSTATUS result;
 	} out;
 

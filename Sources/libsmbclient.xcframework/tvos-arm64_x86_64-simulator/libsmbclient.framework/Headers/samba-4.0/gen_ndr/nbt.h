@@ -5,12 +5,13 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/misc.h>
 #include <gen_ndr/security.h>
 #ifndef _HEADER_nbt
 #define _HEADER_nbt
+
+#include <util/time.h>
 
 #define NBT_NAME_SERVICE_PORT	( 137 )
 #define NBT_DGRAM_SERVICE_PORT	( 138 )
@@ -41,7 +42,7 @@ enum nbt_opcode
 	NBT_OPCODE_MULTI_HOME_REG=(int)((0xf<<11))
 }
 #else
- { __do_not_use_enum_nbt_opcode=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_opcode=INT_MAX}
 #define NBT_OPCODE_QUERY ( (0x0<<11) )
 #define NBT_OPCODE_REGISTER ( (0x5<<11) )
 #define NBT_OPCODE_RELEASE ( (0x6<<11) )
@@ -65,7 +66,7 @@ enum nbt_rcode
 	NBT_RCODE_CFT=(int)(0x7)
 }
 #else
- { __do_not_use_enum_nbt_rcode=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_rcode=INT_MAX}
 #define NBT_RCODE_OK ( 0x0 )
 #define NBT_RCODE_FMT ( 0x1 )
 #define NBT_RCODE_SVR ( 0x2 )
@@ -90,7 +91,7 @@ enum nbt_name_type
 	NBT_NAME_BROWSER=(int)(0x1E)
 }
 #else
- { __do_not_use_enum_nbt_name_type=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_name_type=INT_MAX}
 #define NBT_NAME_CLIENT ( 0x00 )
 #define NBT_NAME_MS ( 0x01 )
 #define NBT_NAME_USER ( 0x03 )
@@ -114,7 +115,7 @@ enum nbt_qclass
 	NBT_QCLASS_IP=(int)(0x01)
 }
 #else
- { __do_not_use_enum_nbt_qclass=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_qclass=INT_MAX}
 #define NBT_QCLASS_IP ( 0x01 )
 #endif
 ;
@@ -126,15 +127,17 @@ enum nbt_qtype
 	NBT_QTYPE_NAMESERVICE=(int)(0x0002),
 	NBT_QTYPE_NULL=(int)(0x000A),
 	NBT_QTYPE_NETBIOS=(int)(0x0020),
-	NBT_QTYPE_STATUS=(int)(0x0021)
+	NBT_QTYPE_STATUS=(int)(0x0021),
+	NBT_QTYPE_WACK=(int)(-1)
 }
 #else
- { __do_not_use_enum_nbt_qtype=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_qtype=INT_MAX}
 #define NBT_QTYPE_ADDRESS ( 0x0001 )
 #define NBT_QTYPE_NAMESERVICE ( 0x0002 )
 #define NBT_QTYPE_NULL ( 0x000A )
 #define NBT_QTYPE_NETBIOS ( 0x0020 )
 #define NBT_QTYPE_STATUS ( 0x0021 )
+#define NBT_QTYPE_WACK ( -1 )
 #endif
 ;
 
@@ -153,7 +156,7 @@ enum nbt_node_type
 	NBT_NODE_H=(int)(0x6000)
 }
 #else
- { __do_not_use_enum_nbt_node_type=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_node_type=INT_MAX}
 #define NBT_NODE_B ( 0x0000 )
 #define NBT_NODE_P ( 0x2000 )
 #define NBT_NODE_M ( 0x4000 )
@@ -232,7 +235,7 @@ struct nbt_res_rec {
 	enum nbt_qclass rr_class;
 	uint32_t ttl;
 	union nbt_rdata rdata;/* [switch_is(rr_type)] */
-}/* [flag(LIBNDR_PRINT_ARRAY_HEX),nopush] */;
+}/* [flag(LIBNDR_PRINT_ARRAY_HEX)] */;
 
 struct nbt_name_packet {
 	uint16_t name_trn_id;
@@ -260,7 +263,7 @@ enum dgram_msg_type
 	DGRAM_QUERY_NEGATIVE=(int)(0x16)
 }
 #else
- { __do_not_use_enum_dgram_msg_type=0x7FFFFFFF}
+ { __do_not_use_enum_dgram_msg_type=INT_MAX}
 #define DGRAM_DIRECT_UNIQUE ( 0x10 )
 #define DGRAM_DIRECT_GROUP ( 0x11 )
 #define DGRAM_BCAST ( 0x12 )
@@ -285,7 +288,7 @@ enum dgram_node_type
 	DGRAM_NODE_NBDD=(int)(0x0C)
 }
 #else
- { __do_not_use_enum_dgram_node_type=0x7FFFFFFF}
+ { __do_not_use_enum_dgram_node_type=INT_MAX}
 #define DGRAM_NODE_B ( 0x00 )
 #define DGRAM_NODE_P ( 0x04 )
 #define DGRAM_NODE_M ( 0x08 )
@@ -299,7 +302,7 @@ enum smb_command
 	SMB_TRANSACTION=(int)(0x25)
 }
 #else
- { __do_not_use_enum_smb_command=0x7FFFFFFF}
+ { __do_not_use_enum_smb_command=INT_MAX}
 #define SMB_TRANSACTION ( 0x25 )
 #endif
 ;
@@ -371,7 +374,7 @@ enum dgram_err_code
 	DGRAM_ERROR_INVALID_DEST=(int)(0x84)
 }
 #else
- { __do_not_use_enum_dgram_err_code=0x7FFFFFFF}
+ { __do_not_use_enum_dgram_err_code=INT_MAX}
 #define DGRAM_ERROR_NAME_NOT_PRESENT ( 0x82 )
 #define DGRAM_ERROR_INVALID_SOURCE ( 0x83 )
 #define DGRAM_ERROR_INVALID_DEST ( 0x84 )
@@ -414,6 +417,8 @@ struct nbt_sockaddr {
 #define NBT_SERVER_FULL_SECRET_DOMAIN_6 ( 0x00001000 )
 #define NBT_SERVER_ADS_WEB_SERVICE ( 0x00002000 )
 #define NBT_SERVER_DS_8 ( 0x00004000 )
+#define NBT_SERVER_DS_9 ( 0x00008000 )
+#define NBT_SERVER_DS_10 ( 0x00010000 )
 #define NBT_SERVER_HAS_DNS_NAME ( 0x20000000 )
 #define NBT_SERVER_IS_DEFAULT_NC ( 0x40000000 )
 #define NBT_SERVER_FOREST_ROOT ( 0x80000000 )
@@ -447,7 +452,7 @@ enum netlogon_command
 	LOGON_SAM_LOGON_USER_UNKNOWN_EX=(int)(25)
 }
 #else
- { __do_not_use_enum_netlogon_command=0x7FFFFFFF}
+ { __do_not_use_enum_netlogon_command=INT_MAX}
 #define LOGON_REQUEST ( 0 )
 #define LOGON_RESPONSE2 ( 6 )
 #define LOGON_PRIMARY_QUERY ( 7 )
@@ -543,7 +548,7 @@ union netlogon_samlogon_response_union {
 struct netlogon_samlogon_response {
 	uint32_t ntver;
 	union netlogon_samlogon_response_union data;/* [switch_is(ntver)] */
-}/* [nopull,nopush] */;
+}/* [noprint,nopull,nopush,public] */;
 
 struct nbt_netlogon_query_for_pdc {
 	const char * computer_name;/* [flag(LIBNDR_FLAG_STR_ASCII|LIBNDR_FLAG_STR_NULLTERM)] */
@@ -623,7 +628,7 @@ enum nbt_browse_opcode
 	LocalMasterAnnouncement=(int)(15)
 }
 #else
- { __do_not_use_enum_nbt_browse_opcode=0x7FFFFFFF}
+ { __do_not_use_enum_nbt_browse_opcode=INT_MAX}
 #define HostAnnouncement ( 1 )
 #define AnnouncementRequest ( 2 )
 #define Election ( 8 )

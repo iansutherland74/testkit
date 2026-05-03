@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/misc.h>
 #include <gen_ndr/security.h>
@@ -22,7 +21,7 @@ enum auth_method
 	SEC_AUTH_METHOD_KERBEROS=(int)(2)
 }
 #else
- { __do_not_use_enum_auth_method=0x7FFFFFFF}
+ { __do_not_use_enum_auth_method=INT_MAX}
 #define SEC_AUTH_METHOD_UNAUTHENTICATED ( 0 )
 #define SEC_AUTH_METHOD_NTLM ( 1 )
 #define SEC_AUTH_METHOD_KERBEROS ( 2 )
@@ -50,12 +49,12 @@ struct auth_user_info {
 	uint16_t logon_count;
 	uint16_t bad_password_count;
 	uint32_t acct_flags;
-	uint8_t authenticated;
+	uint32_t user_flags;
 }/* [public] */;
 
 struct auth_user_info_torture {
 	uint32_t num_dc_sids;
-	struct dom_sid *dc_sids;/* [size_is(num_dc_sids)] */
+	struct auth_SidAttr *dc_sids;/* [size_is(num_dc_sids)] */
 }/* [public] */;
 
 struct auth_user_info_unix {
@@ -71,16 +70,56 @@ enum ticket_type
 	TICKET_TYPE_NON_TGT=(int)(2)
 }
 #else
- { __do_not_use_enum_ticket_type=0x7FFFFFFF}
+ { __do_not_use_enum_ticket_type=INT_MAX}
 #define TICKET_TYPE_UNKNOWN ( 0 )
 #define TICKET_TYPE_TGT ( 1 )
 #define TICKET_TYPE_NON_TGT ( 2 )
 #endif
 ;
 
+enum auth_group_inclusion
+#ifndef USE_UINT_ENUMS
+ {
+	AUTH_GROUP_INCLUSION_INVALID=(int)(0),
+	AUTH_INCLUDE_RESOURCE_GROUPS=(int)(2),
+	AUTH_INCLUDE_RESOURCE_GROUPS_COMPRESSED=(int)(3),
+	AUTH_EXCLUDE_RESOURCE_GROUPS=(int)(4)
+}
+#else
+ { __do_not_use_enum_auth_group_inclusion=INT_MAX}
+#define AUTH_GROUP_INCLUSION_INVALID ( 0 )
+#define AUTH_INCLUDE_RESOURCE_GROUPS ( 2 )
+#define AUTH_INCLUDE_RESOURCE_GROUPS_COMPRESSED ( 3 )
+#define AUTH_EXCLUDE_RESOURCE_GROUPS ( 4 )
+#endif
+;
+
+enum auth_sid_origin
+#ifndef USE_UINT_ENUMS
+ {
+	AUTH_SID_ORIGIN_UNKNOWN=(int)(0),
+	AUTH_SID_ORIGIN_BASE=(int)(1),
+	AUTH_SID_ORIGIN_EXTRA=(int)(2),
+	AUTH_SID_ORIGIN_RESOURCE=(int)(3)
+}
+#else
+ { __do_not_use_enum_auth_sid_origin=INT_MAX}
+#define AUTH_SID_ORIGIN_UNKNOWN ( 0 )
+#define AUTH_SID_ORIGIN_BASE ( 1 )
+#define AUTH_SID_ORIGIN_EXTRA ( 2 )
+#define AUTH_SID_ORIGIN_RESOURCE ( 3 )
+#endif
+;
+
+struct auth_SidAttr {
+	struct dom_sid sid;
+	uint32_t attrs;
+	enum auth_sid_origin origin;
+}/* [nopull,nopush] */;
+
 struct auth_user_info_dc {
 	uint32_t num_sids;
-	struct dom_sid *sids;/* [size_is(num_sids)] */
+	struct auth_SidAttr *sids;/* [size_is(num_sids)] */
 	struct auth_user_info *info;/* [unique] */
 	DATA_BLOB user_session_key;/* [noprint] */
 	DATA_BLOB lm_session_key;/* [noprint] */

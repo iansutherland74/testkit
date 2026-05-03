@@ -5,10 +5,11 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #ifndef _HEADER_misc
 #define _HEADER_misc
+
+#include <util/data_blob.h>
 
 #define SV_TYPE_ALL	( 0xFFFFFFFF )
 struct GUID {
@@ -42,7 +43,7 @@ enum netr_SchannelType
 	SEC_CHAN_RODC=(int)(7)
 }
 #else
- { __do_not_use_enum_netr_SchannelType=0x7FFFFFFF}
+ { __do_not_use_enum_netr_SchannelType=INT_MAX}
 #define SEC_CHAN_NULL ( 0 )
 #define SEC_CHAN_LOCAL ( 1 )
 #define SEC_CHAN_WKSTA ( 2 )
@@ -53,12 +54,6 @@ enum netr_SchannelType
 #define SEC_CHAN_RODC ( 7 )
 #endif
 ;
-
-struct KRB5_EDATA_NTSTATUS {
-	NTSTATUS ntstatus;
-	uint32_t unknown1;
-	uint32_t unknown2;
-}/* [public] */;
 
 enum winreg_Type
 #ifndef USE_UINT_ENUMS
@@ -77,7 +72,7 @@ enum winreg_Type
 	REG_QWORD=(int)(11)
 }
 #else
- { __do_not_use_enum_winreg_Type=0x7FFFFFFF}
+ { __do_not_use_enum_winreg_Type=INT_MAX}
 #define REG_NONE ( 0 )
 #define REG_SZ ( 1 )
 #define REG_EXPAND_SZ ( 2 )
@@ -118,7 +113,7 @@ enum netr_SamDatabaseID
 	SAM_DATABASE_PRIVS=(int)(2)
 }
 #else
- { __do_not_use_enum_netr_SamDatabaseID=0x7FFFFFFF}
+ { __do_not_use_enum_netr_SamDatabaseID=INT_MAX}
 #define SAM_DATABASE_DOMAIN ( 0 )
 #define SAM_DATABASE_BUILTIN ( 1 )
 #define SAM_DATABASE_PRIVS ( 2 )

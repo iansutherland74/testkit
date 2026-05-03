@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #ifndef _HEADER_server_id
 #define _HEADER_server_id

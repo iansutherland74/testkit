@@ -42,7 +42,8 @@ let package = Package(
                 "libfreetype", "libfribidi", "libharfbuzz", "libass",
                 "libfontconfig",
                 .target(name: "libbluray", condition: .when(platforms: [.macOS])),
-                "gmp", "nettle", "hogweed", "gnutls",
+                "gmp", "nettle", "hogweed", "gnutls", "libtls", "libssl", "libcrypto",
+                "libpng", "libdovi",
                 "libsmbclient",
                 "Libavcodec", "Libavdevice", "Libavfilter", "Libavformat", "Libavutil", "Libswresample", "Libswscale",
             ],
@@ -231,13 +232,25 @@ let package = Package(
             name: "libsmbclient",
             path: "Sources/libsmbclient.xcframework"
         ),
-//        .binaryTarget(
-//            name: "libssl",
-//            path: "Sources/libssl.xcframework"
-//        ),
-//        .binaryTarget(
-//            name: "libcrypto",
-//            path: "Sources/libcrypto.xcframework"
-//        ),
+        .binaryTarget(
+            name: "libpng",
+            path: "Sources/libpng.xcframework"
+        ),
+        .binaryTarget(
+            name: "libdovi",
+            path: "Sources/libdovi.xcframework"
+        ),
+        .binaryTarget(
+            name: "libtls",
+            path: "Sources/libtls.xcframework"
+        ),
+        .binaryTarget(
+            name: "libssl",
+            path: "Sources/libssl.xcframework"
+        ),
+        .binaryTarget(
+            name: "libcrypto",
+            path: "Sources/libcrypto.xcframework"
+        ),
     ]
 )

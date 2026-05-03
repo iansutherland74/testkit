@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 
-#include <core/ntstatus.h>
 
 #include <gen_ndr/misc.h>
 #include <gen_ndr/security.h>
@@ -61,7 +60,7 @@ enum svcctl_ServiceStatus
 	SVCCTL_PAUSED=(int)(0x00000007)
 }
 #else
- { __do_not_use_enum_svcctl_ServiceStatus=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_ServiceStatus=INT_MAX}
 #define SVCCTL_STATE_UNKNOWN ( 0x00000000 )
 #define SVCCTL_STOPPED ( 0x00000001 )
 #define SVCCTL_START_PENDING ( 0x00000002 )
@@ -117,15 +116,25 @@ enum SERVICE_CONTROL
 	SVCCTL_CONTROL_PAUSE=(int)(0x00000002),
 	SVCCTL_CONTROL_CONTINUE=(int)(0x00000003),
 	SVCCTL_CONTROL_INTERROGATE=(int)(0x00000004),
-	SVCCTL_CONTROL_SHUTDOWN=(int)(0x00000005)
+	SVCCTL_CONTROL_SHUTDOWN=(int)(0x00000005),
+	SVCCTL_CONTROL_PARAMCHANGE=(int)(0x00000006),
+	SVCCTL_CONTROL_NETBINDADD=(int)(0x00000007),
+	SVCCTL_CONTROL_NETBINDREMOVE=(int)(0x00000008),
+	SVCCTL_CONTROL_NETBINDENABLE=(int)(0x00000009),
+	SVCCTL_CONTROL_NETBINDDISABLE=(int)(0x0000000A)
 }
 #else
- { __do_not_use_enum_SERVICE_CONTROL=0x7FFFFFFF}
+ { __do_not_use_enum_SERVICE_CONTROL=INT_MAX}
 #define SVCCTL_CONTROL_STOP ( 0x00000001 )
 #define SVCCTL_CONTROL_PAUSE ( 0x00000002 )
 #define SVCCTL_CONTROL_CONTINUE ( 0x00000003 )
 #define SVCCTL_CONTROL_INTERROGATE ( 0x00000004 )
 #define SVCCTL_CONTROL_SHUTDOWN ( 0x00000005 )
+#define SVCCTL_CONTROL_PARAMCHANGE ( 0x00000006 )
+#define SVCCTL_CONTROL_NETBINDADD ( 0x00000007 )
+#define SVCCTL_CONTROL_NETBINDREMOVE ( 0x00000008 )
+#define SVCCTL_CONTROL_NETBINDENABLE ( 0x00000009 )
+#define SVCCTL_CONTROL_NETBINDDISABLE ( 0x0000000A )
 #endif
 ;
 
@@ -138,7 +147,7 @@ enum svcctl_ErrorControl
 	SVCCTL_SVC_ERROR_SEVERE=(int)(0x00000003)
 }
 #else
- { __do_not_use_enum_svcctl_ErrorControl=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_ErrorControl=INT_MAX}
 #define SVCCTL_SVC_ERROR_IGNORE ( 0x00000000 )
 #define SVCCTL_SVC_ERROR_NORMAL ( 0x00000001 )
 #define SVCCTL_SVC_ERROR_CRITICAL ( 0x00000002 )
@@ -156,7 +165,7 @@ enum svcctl_StartType
 	SVCCTL_DISABLED=(int)(0x00000004)
 }
 #else
- { __do_not_use_enum_svcctl_StartType=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_StartType=INT_MAX}
 #define SVCCTL_BOOT_START ( 0x00000000 )
 #define SVCCTL_SYSTEM_START ( 0x00000001 )
 #define SVCCTL_AUTO_START ( 0x00000002 )
@@ -173,7 +182,7 @@ enum svcctl_ServiceState
 	SERVICE_STATE_ALL=(int)((SERVICE_STATE_ACTIVE|SERVICE_STATE_INACTIVE))
 }
 #else
- { __do_not_use_enum_svcctl_ServiceState=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_ServiceState=INT_MAX}
 #define SERVICE_STATE_ACTIVE ( 0x00000001 )
 #define SERVICE_STATE_INACTIVE ( 0x00000002 )
 #define SERVICE_STATE_ALL ( (SERVICE_STATE_ACTIVE|SERVICE_STATE_INACTIVE) )
@@ -222,7 +231,7 @@ enum svcctl_ConfigLevel
 	SERVICE_CONFIG_FAILURE_ACTIONS=(int)(0x00000002)
 }
 #else
- { __do_not_use_enum_svcctl_ConfigLevel=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_ConfigLevel=INT_MAX}
 #define SERVICE_CONFIG_DESCRIPTION ( 0x00000001 )
 #define SERVICE_CONFIG_FAILURE_ACTIONS ( 0x00000002 )
 #endif
@@ -241,7 +250,7 @@ enum SC_ACTION_TYPE
 	SC_ACTION_RUN_COMMAND=(int)(3)
 }
 #else
- { __do_not_use_enum_SC_ACTION_TYPE=0x7FFFFFFF}
+ { __do_not_use_enum_SC_ACTION_TYPE=INT_MAX}
 #define SC_ACTION_NONE ( 0 )
 #define SC_ACTION_RESTART ( 1 )
 #define SC_ACTION_REBOOT ( 2 )
@@ -254,7 +263,7 @@ struct SC_ACTION {
 	uint32_t delay;
 };
 
-struct SERVICE_FAILURE_ACTIONS {
+struct SERVICE_FAILURE_ACTIONSW {
 	uint32_t reset_period;
 	const char * rebootmsg;/* [flag(LIBNDR_FLAG_STR_NULLTERM|LIBNDR_FLAG_ALIGN2),relative] */
 	const char * command;/* [flag(LIBNDR_FLAG_STR_NULLTERM|LIBNDR_FLAG_ALIGN2),relative] */
@@ -268,10 +277,235 @@ enum svcctl_StatusLevel
 	SVC_STATUS_PROCESS_INFO=(int)(0x00000000)
 }
 #else
- { __do_not_use_enum_svcctl_StatusLevel=0x7FFFFFFF}
+ { __do_not_use_enum_svcctl_StatusLevel=INT_MAX}
 #define SVC_STATUS_PROCESS_INFO ( 0x00000000 )
 #endif
 ;
+
+struct SERVICE_NOTIFY_STATUS_CHANGE_PARAMS_1 {
+	uint64_t ullThreadId;
+	uint32_t dwNotifyMask;
+	uint8_t CallbackAddressArray[16];
+	uint8_t CallbackParamAddressArray[16];
+	struct SERVICE_STATUS_PROCESS ServiceStatus;
+	uint32_t dwNotificationStatus;
+	uint32_t dwSequence;
+};
+
+struct SERVICE_NOTIFY_STATUS_CHANGE_PARAMS_2 {
+	uint64_t ullThreadId;
+	uint32_t dwNotifyMask;
+	uint8_t CallbackAddressArray[16];
+	uint8_t CallbackParamAddressArray[16];
+	struct SERVICE_STATUS_PROCESS ServiceStatus;
+	uint32_t dwNotificationStatus;
+	uint32_t dwSequence;
+	uint32_t dwNotificationTriggered;
+	const char *pszServiceNames;/* [charset(UTF16),range(0,64*1024),unique] */
+};
+
+union SC_RPC_NOTIFY_PARAMS_u {
+	struct SERVICE_NOTIFY_STATUS_CHANGE_PARAMS_1 *pStatusChangeParam1;/* [case,unique] */
+	struct SERVICE_NOTIFY_STATUS_CHANGE_PARAMS_2 *pStatusChangeParams;/* [case(2),unique] */
+}/* [switch_type(uint32)] */;
+
+struct SC_RPC_NOTIFY_PARAMS {
+	uint32_t dwInfoLevel;
+	union SC_RPC_NOTIFY_PARAMS_u u;/* [switch_is(dwInfoLevel)] */
+};
+
+struct SC_RPC_NOTIFY_PARAMS_LIST {
+	uint32_t cElements;/* [range(0,1024*4)] */
+	struct SC_RPC_NOTIFY_PARAMS *NotifyParamsArray;/* [size_is(cElements)] */
+};
+
+enum svcctl_ServiceStopReasonMain
+#ifndef USE_UINT_ENUMS
+ {
+	SERVICE_STOP_UNPLANNED=(int)(0x10000000),
+	SERVICE_STOP_CUSTOM=(int)(0x20000000),
+	SERVICE_STOP_PLANNED=(int)(0x40000000)
+}
+#else
+ { __do_not_use_enum_svcctl_ServiceStopReasonMain=INT_MAX}
+#define SERVICE_STOP_UNPLANNED ( 0x10000000 )
+#define SERVICE_STOP_CUSTOM ( 0x20000000 )
+#define SERVICE_STOP_PLANNED ( 0x40000000 )
+#endif
+;
+
+enum svcctl_ServiceStopReasonMajor
+#ifndef USE_UINT_ENUMS
+ {
+	SERVICE_STOP_REASON_MAJOR_OTHER=(int)(0x00010000),
+	SERVICE_STOP_REASON_MAJOR_HARDWARE=(int)(0x00020000),
+	SERVICE_STOP_REASON_MAJOR_OPERATINGSYSTEM=(int)(0x00030000),
+	SERVICE_STOP_REASON_MAJOR_SOFTWARE=(int)(0x00040000),
+	SERVICE_STOP_REASON_MAJOR_APPLICATION=(int)(0x00050000),
+	SERVICE_STOP_REASON_MAJOR_NONE=(int)(0x00060000)
+}
+#else
+ { __do_not_use_enum_svcctl_ServiceStopReasonMajor=INT_MAX}
+#define SERVICE_STOP_REASON_MAJOR_OTHER ( 0x00010000 )
+#define SERVICE_STOP_REASON_MAJOR_HARDWARE ( 0x00020000 )
+#define SERVICE_STOP_REASON_MAJOR_OPERATINGSYSTEM ( 0x00030000 )
+#define SERVICE_STOP_REASON_MAJOR_SOFTWARE ( 0x00040000 )
+#define SERVICE_STOP_REASON_MAJOR_APPLICATION ( 0x00050000 )
+#define SERVICE_STOP_REASON_MAJOR_NONE ( 0x00060000 )
+#endif
+;
+
+enum svcctl_ServiceStopReasonMinor
+#ifndef USE_UINT_ENUMS
+ {
+	SERVICE_STOP_REASON_MINOR_OTHER=(int)(0x00000001),
+	SERVICE_STOP_REASON_MINOR_MAINTENANCE=(int)(0x00000002),
+	SERVICE_STOP_REASON_MINOR_INSTALLATION=(int)(0x00000003),
+	SERVICE_STOP_REASON_MINOR_UPGRADE=(int)(0x00000004),
+	SERVICE_STOP_REASON_MINOR_RECONFIG=(int)(0x00000005),
+	SERVICE_STOP_REASON_MINOR_HUNG=(int)(0x00000006),
+	SERVICE_STOP_REASON_MINOR_UNSTABLE=(int)(0x00000007),
+	SERVICE_STOP_REASON_MINOR_DISK=(int)(0x00000008),
+	SERVICE_STOP_REASON_MINOR_NETWORKCARD=(int)(0x00000009),
+	SERVICE_STOP_REASON_MINOR_ENVIRONMENT=(int)(0x0000000a),
+	SERVICE_STOP_REASON_MINOR_HARDWARE_DRIVER=(int)(0x0000000b),
+	SERVICE_STOP_REASON_MINOR_OTHERDRIVER=(int)(0x0000000c),
+	SERVICE_STOP_REASON_MINOR_SERVICEPACK=(int)(0x0000000d),
+	SERVICE_STOP_REASON_MINOR_SOFTWARE_UPDATE=(int)(0x0000000e),
+	SERVICE_STOP_REASON_MINOR_SECURITYFIX=(int)(0x0000000f),
+	SERVICE_STOP_REASON_MINOR_SECURITY=(int)(0x00000010),
+	SERVICE_STOP_REASON_MINOR_NETWORK_CONNECTIVITY=(int)(0x00000011),
+	SERVICE_STOP_REASON_MINOR_WMI=(int)(0x00000012),
+	SERVICE_STOP_REASON_MINOR_SERVICEPACK_UNINSTALL=(int)(0x00000013),
+	SERVICE_STOP_REASON_MINOR_SOFTWARE_UPDATE_UNINSTALL=(int)(0x00000014),
+	SERVICE_STOP_REASON_MINOR_SECURITYFIX_UNINSTALL=(int)(0x00000015),
+	SERVICE_STOP_REASON_MINOR_MMC=(int)(0x00000016),
+	SERVICE_STOP_REASON_MINOR_NONE=(int)(0x00000017)
+}
+#else
+ { __do_not_use_enum_svcctl_ServiceStopReasonMinor=INT_MAX}
+#define SERVICE_STOP_REASON_MINOR_OTHER ( 0x00000001 )
+#define SERVICE_STOP_REASON_MINOR_MAINTENANCE ( 0x00000002 )
+#define SERVICE_STOP_REASON_MINOR_INSTALLATION ( 0x00000003 )
+#define SERVICE_STOP_REASON_MINOR_UPGRADE ( 0x00000004 )
+#define SERVICE_STOP_REASON_MINOR_RECONFIG ( 0x00000005 )
+#define SERVICE_STOP_REASON_MINOR_HUNG ( 0x00000006 )
+#define SERVICE_STOP_REASON_MINOR_UNSTABLE ( 0x00000007 )
+#define SERVICE_STOP_REASON_MINOR_DISK ( 0x00000008 )
+#define SERVICE_STOP_REASON_MINOR_NETWORKCARD ( 0x00000009 )
+#define SERVICE_STOP_REASON_MINOR_ENVIRONMENT ( 0x0000000a )
+#define SERVICE_STOP_REASON_MINOR_HARDWARE_DRIVER ( 0x0000000b )
+#define SERVICE_STOP_REASON_MINOR_OTHERDRIVER ( 0x0000000c )
+#define SERVICE_STOP_REASON_MINOR_SERVICEPACK ( 0x0000000d )
+#define SERVICE_STOP_REASON_MINOR_SOFTWARE_UPDATE ( 0x0000000e )
+#define SERVICE_STOP_REASON_MINOR_SECURITYFIX ( 0x0000000f )
+#define SERVICE_STOP_REASON_MINOR_SECURITY ( 0x00000010 )
+#define SERVICE_STOP_REASON_MINOR_NETWORK_CONNECTIVITY ( 0x00000011 )
+#define SERVICE_STOP_REASON_MINOR_WMI ( 0x00000012 )
+#define SERVICE_STOP_REASON_MINOR_SERVICEPACK_UNINSTALL ( 0x00000013 )
+#define SERVICE_STOP_REASON_MINOR_SOFTWARE_UPDATE_UNINSTALL ( 0x00000014 )
+#define SERVICE_STOP_REASON_MINOR_SECURITYFIX_UNINSTALL ( 0x00000015 )
+#define SERVICE_STOP_REASON_MINOR_MMC ( 0x00000016 )
+#define SERVICE_STOP_REASON_MINOR_NONE ( 0x00000017 )
+#endif
+;
+
+struct SERVICE_CONTROL_STATUS_REASON_IN_PARAMSA {
+	uint32_t dwReason;
+	const char *szComment;/* [charset(DOS),range(0,SC_MAX_COMMENT_LENGTH),unique] */
+};
+
+struct SERVICE_CONTROL_STATUS_REASON_OUT_PARAMS {
+	struct SERVICE_STATUS_PROCESS ServiceStatus;
+};
+
+union SC_RPC_SERVICE_CONTROL_IN_PARAMSA {
+	struct SERVICE_CONTROL_STATUS_REASON_IN_PARAMSA *psrInParams;/* [case,unique] */
+}/* [switch_type(uint32)] */;
+
+union SC_RPC_SERVICE_CONTROL_OUT_PARAMSA {
+	struct SERVICE_CONTROL_STATUS_REASON_OUT_PARAMS *psrOutParams;/* [case,unique] */
+}/* [switch_type(uint32)] */;
+
+struct SERVICE_CONTROL_STATUS_REASON_IN_PARAMSW {
+	uint32_t dwReason;
+	const char *pszComment;/* [charset(UTF16),range(0,SC_MAX_COMMENT_LENGTH),unique] */
+};
+
+union SC_RPC_SERVICE_CONTROL_IN_PARAMSW {
+	struct SERVICE_CONTROL_STATUS_REASON_IN_PARAMSW *psrInParams;/* [case,unique] */
+}/* [switch_type(uint32)] */;
+
+union SC_RPC_SERVICE_CONTROL_OUT_PARAMSW {
+	struct SERVICE_CONTROL_STATUS_REASON_OUT_PARAMS *psrOutParams;/* [case,unique] */
+}/* [switch_type(uint32)] */;
+
+struct SERVICE_DESCRIPTIONW {
+	const char *lpDescription;/* [charset(UTF16),range(0,8*1024),unique] */
+};
+
+struct SERVICE_DELAYED_AUTO_START_INFO {
+	uint32_t fDelayedAutostart;
+};
+
+struct SERVICE_FAILURE_ACTIONS_FLAG {
+	uint32_t fFailureActionsOnNonCrashFailures;
+};
+
+struct SERVICE_SID_INFO {
+	uint32_t dwServiceSidType;
+};
+
+struct SERVICE_RPC_REQUIRED_PRIVILEGES_INFO {
+	uint32_t cbRequiredPrivileges;/* [range(0,1024*4)] */
+	uint8_t *pRequiredPrivileges;/* [size_is(cbRequiredPrivileges),unique] */
+};
+
+struct SERVICE_PRESHUTDOWN_INFO {
+	uint32_t dwPreshutdownTimeout;
+};
+
+struct SERVICE_TRIGGER_SPECIFIC_DATA_ITEM {
+	uint32_t dwDataType;
+	uint32_t cbData;/* [range(0,1024)] */
+	uint8_t *pData;/* [size_is(cbData),unique] */
+};
+
+struct SERVICE_TRIGGER {
+	uint32_t dwTriggerType;
+	uint32_t dwAction;
+	struct GUID *pTriggerSubtype;/* [unique] */
+	uint32_t cDataItems;/* [range(0,64)] */
+	struct SERVICE_TRIGGER_SPECIFIC_DATA_ITEM *pDataItems;/* [size_is(cDataItems),unique] */
+};
+
+struct SERVICE_TRIGGER_INFO {
+	uint32_t cTriggers;/* [range(0,64)] */
+	struct SERVICE_TRIGGER *pTriggers;/* [size_is(cTriggers),unique] */
+	uint8_t *pReserved;/* [unique] */
+};
+
+struct SERVICE_PREFERRED_NODE_INFO {
+	uint16_t usPreferredNode;
+	uint32_t fDelete;
+};
+
+union SC_RPC_CONFIG_INFOW_u {
+	struct SERVICE_DESCRIPTIONW *psd;/* [case,unique] */
+	struct SERVICE_FAILURE_ACTIONSW *psfa;/* [case(2),unique] */
+	struct SERVICE_DELAYED_AUTO_START_INFO *psda;/* [case(3),unique] */
+	struct SERVICE_FAILURE_ACTIONS_FLAG *psfaf;/* [case(4),unique] */
+	struct SERVICE_SID_INFO *pssid;/* [case(5),unique] */
+	struct SERVICE_RPC_REQUIRED_PRIVILEGES_INFO *psrp;/* [case(6),unique] */
+	struct SERVICE_PRESHUTDOWN_INFO *psps;/* [case(7),unique] */
+	struct SERVICE_TRIGGER_INFO *psti;/* [case(8),unique] */
+	struct SERVICE_PREFERRED_NODE_INFO *pspn;/* [case(9),unique] */
+}/* [switch_type(uint32)] */;
+
+struct SC_RPC_CONFIG_INFOW {
+	uint32_t dwInfoLevel;
+	union SC_RPC_CONFIG_INFOW_u u;/* [switch_is(dwInfoLevel)] */
+};
 
 
 struct svcctl_CloseServiceHandle {
@@ -906,7 +1140,7 @@ struct svcctl_QueryServiceStatusEx {
 };
 
 
-struct EnumServicesStatusExA {
+struct svcctl_EnumServicesStatusExA {
 	struct {
 		struct policy_handle *scmanager;/* [ref] */
 		uint32_t info_level;
@@ -928,7 +1162,7 @@ struct EnumServicesStatusExA {
 };
 
 
-struct EnumServicesStatusExW {
+struct svcctl_EnumServicesStatusExW {
 	struct {
 		struct policy_handle *scmanager;/* [ref] */
 		uint32_t info_level;
@@ -952,6 +1186,236 @@ struct EnumServicesStatusExW {
 
 struct svcctl_SCSendTSMessage {
 	struct {
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_CreateServiceWOW64A {
+	struct {
+		struct policy_handle hSCManager;
+		const char *lpServiceName;/* [charset(DOS),range(0,SC_MAX_NAME_LENGTH),ref] */
+		const char *lpDisplayName;/* [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint32_t dwDesiredAccess;
+		uint32_t dwServiceType;
+		uint32_t dwStartType;
+		uint32_t dwErrorControl;
+		const char *lpBinaryPathName;/* [charset(DOS),range(0,SC_MAX_PATH_LENGTH),ref] */
+		const char *lpLoadOrderGroup;/* [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint8_t *lpDependencies;/* [size_is(dwDependSize),unique] */
+		uint32_t dwDependSize;/* [range(0,SC_MAX_DEPEND_SIZE)] */
+		const char *lpServiceStartName;/* [charset(DOS),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */
+		uint8_t *lpPassword;/* [size_is(dwPwSize),unique] */
+		uint32_t dwPwSize;/* [range(0,SC_MAX_PWD_SIZE)] */
+		uint32_t *lpdwTagId;/* [unique] */
+	} in;
+
+	struct {
+		struct policy_handle *lpServiceHandle;/* [ref] */
+		uint32_t *lpdwTagId;/* [unique] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_CreateServiceWOW64W {
+	struct {
+		struct policy_handle hSCManager;
+		const char *lpServiceName;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */
+		const char *lpDisplayName;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint32_t dwDesiredAccess;
+		uint32_t dwServiceType;
+		uint32_t dwStartType;
+		uint32_t dwErrorControl;
+		const char *lpBinaryPathName;/* [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */
+		const char *lpLoadOrderGroup;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint8_t *lpDependencies;/* [size_is(dwDependSize),unique] */
+		uint32_t dwDependSize;/* [range(0,SC_MAX_DEPEND_SIZE)] */
+		const char *lpServiceStartName;/* [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */
+		uint8_t *lpPassword;/* [size_is(dwPwSize),unique] */
+		uint32_t dwPwSize;/* [range(0,SC_MAX_PWD_SIZE)] */
+		uint32_t *lpdwTagId;/* [unique] */
+	} in;
+
+	struct {
+		struct policy_handle *lpServiceHandle;/* [ref] */
+		uint32_t *lpdwTagId;/* [unique] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct Opnum46NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct svcctl_NotifyServiceStatusChange {
+	struct {
+		struct policy_handle hService;
+		struct SC_RPC_NOTIFY_PARAMS NotifyParams;
+		struct GUID *pClientProcessGuid;/* [ref] */
+	} in;
+
+	struct {
+		struct GUID *pSCMProcessGuid;/* [ref] */
+		uint32_t *pfCreateRemoteQueue;/* [ref] */
+		struct policy_handle *phNotify;/* [ref] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_GetNotifyResults {
+	struct {
+		struct policy_handle hNotify;
+	} in;
+
+	struct {
+		struct SC_RPC_NOTIFY_PARAMS_LIST *ppNotifyParams;/* [ref] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_CloseNotifyHandle {
+	struct {
+		struct policy_handle *phNotify;/* [ref] */
+	} in;
+
+	struct {
+		uint32_t *pfApcFired;/* [ref] */
+		struct policy_handle *phNotify;/* [ref] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_ControlServiceExA {
+	struct {
+		struct policy_handle hService;
+		enum SERVICE_CONTROL dwControl;
+		uint32_t dwInfoLevel;
+		union SC_RPC_SERVICE_CONTROL_IN_PARAMSA *pControlInParams;/* [ref,switch_is(dwInfoLevel)] */
+	} in;
+
+	struct {
+		union SC_RPC_SERVICE_CONTROL_OUT_PARAMSA *pControlOutParams;/* [ref,switch_is(dwInfoLevel)] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_ControlServiceExW {
+	struct {
+		struct policy_handle hService;
+		enum SERVICE_CONTROL dwControl;
+		uint32_t dwInfoLevel;
+		union SC_RPC_SERVICE_CONTROL_IN_PARAMSW *pControlInParams;/* [ref,switch_is(dwInfoLevel)] */
+	} in;
+
+	struct {
+		union SC_RPC_SERVICE_CONTROL_OUT_PARAMSW *pControlOutParams;/* [ref,switch_is(dwInfoLevel)] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct Opnum52NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct Opnum53NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct Opnum54NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct Opnum55NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct svcctl_QueryServiceConfigEx {
+	struct {
+		struct policy_handle hService;
+		uint32_t dwInfoLevel;
+	} in;
+
+	struct {
+		struct SC_RPC_CONFIG_INFOW *pInfo;/* [ref] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct Opnum57NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct Opnum58NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct Opnum59NotUsedOnWire {
+	int _dummy_element;
+};
+
+
+struct svcctl_CreateWowService {
+	struct {
+		struct policy_handle hSCManager;
+		const char *lpServiceName;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */
+		const char *lpDisplayName;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint32_t dwDesiredAccess;
+		uint32_t dwServiceType;
+		uint32_t dwStartType;
+		uint32_t dwErrorControl;
+		const char *lpBinaryPathName;/* [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */
+		const char *lpLoadOrderGroup;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint8_t *lpDependencies;/* [size_is(dwDependSize),unique] */
+		uint32_t dwDependSize;/* [range(0,SC_MAX_DEPEND_SIZE)] */
+		const char *lpServiceStartName;/* [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */
+		uint8_t *lpPassword;/* [size_is(dwPwSize),unique] */
+		uint32_t dwPwSize;/* [range(0,SC_MAX_PWD_SIZE)] */
+		uint16_t dwServiceWowType;
+		uint32_t *lpdwTagId;/* [unique] */
+	} in;
+
+	struct {
+		struct policy_handle *lpServiceHandle;/* [ref] */
+		uint32_t *lpdwTagId;/* [unique] */
+		WERROR result;
+	} out;
+
+};
+
+
+struct svcctl_OpenSCManager2 {
+	struct {
+		struct policy_handle BindingHandle;
+		const char *DatabaseName;/* [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */
+		uint32_t DesiredAccess;
+	} in;
+
+	struct {
+		struct policy_handle *ScmHandle;/* [ref] */
 		WERROR result;
 	} out;
 

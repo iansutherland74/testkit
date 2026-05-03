@@ -26,16 +26,16 @@ void ndr_print_atsvc_DaysOfWeek(struct ndr_print *ndr, const char *name, uint8_t
 void ndr_print_atsvc_JobInfo(struct ndr_print *ndr, const char *name, const struct atsvc_JobInfo *r);
 void ndr_print_atsvc_JobEnumInfo(struct ndr_print *ndr, const char *name, const struct atsvc_JobEnumInfo *r);
 void ndr_print_atsvc_enum_ctr(struct ndr_print *ndr, const char *name, const struct atsvc_enum_ctr *r);
-enum ndr_err_code ndr_push_atsvc_JobAdd(struct ndr_push *ndr, int flags, const struct atsvc_JobAdd *r);
-enum ndr_err_code ndr_pull_atsvc_JobAdd(struct ndr_pull *ndr, int flags, struct atsvc_JobAdd *r);
-void ndr_print_atsvc_JobAdd(struct ndr_print *ndr, const char *name, int flags, const struct atsvc_JobAdd *r);
-enum ndr_err_code ndr_push_atsvc_JobDel(struct ndr_push *ndr, int flags, const struct atsvc_JobDel *r);
-enum ndr_err_code ndr_pull_atsvc_JobDel(struct ndr_pull *ndr, int flags, struct atsvc_JobDel *r);
-void ndr_print_atsvc_JobDel(struct ndr_print *ndr, const char *name, int flags, const struct atsvc_JobDel *r);
-enum ndr_err_code ndr_push_atsvc_JobEnum(struct ndr_push *ndr, int flags, const struct atsvc_JobEnum *r);
-enum ndr_err_code ndr_pull_atsvc_JobEnum(struct ndr_pull *ndr, int flags, struct atsvc_JobEnum *r);
-void ndr_print_atsvc_JobEnum(struct ndr_print *ndr, const char *name, int flags, const struct atsvc_JobEnum *r);
-enum ndr_err_code ndr_push_atsvc_JobGetInfo(struct ndr_push *ndr, int flags, const struct atsvc_JobGetInfo *r);
-enum ndr_err_code ndr_pull_atsvc_JobGetInfo(struct ndr_pull *ndr, int flags, struct atsvc_JobGetInfo *r);
-void ndr_print_atsvc_JobGetInfo(struct ndr_print *ndr, const char *name, int flags, const struct atsvc_JobGetInfo *r);
+enum ndr_err_code ndr_push_atsvc_JobAdd(struct ndr_push *ndr, ndr_flags_type flags, const struct atsvc_JobAdd *r);
+enum ndr_err_code ndr_pull_atsvc_JobAdd(struct ndr_pull *ndr, ndr_flags_type flags, struct atsvc_JobAdd *r);
+void ndr_print_atsvc_JobAdd(struct ndr_print *ndr, const char *name, ndr_flags_type flags, const struct atsvc_JobAdd *r);
+enum ndr_err_code ndr_push_atsvc_JobDel(struct ndr_push *ndr, ndr_flags_type flags, const struct atsvc_JobDel *r);
+enum ndr_err_code ndr_pull_atsvc_JobDel(struct ndr_pull *ndr, ndr_flags_type flags, struct atsvc_JobDel *r);
+void ndr_print_atsvc_JobDel(struct ndr_print *ndr, const char *name, ndr_flags_type flags, const struct atsvc_JobDel *r);
+enum ndr_err_code ndr_push_atsvc_JobEnum(struct ndr_push *ndr, ndr_flags_type flags, const struct atsvc_JobEnum *r);
+enum ndr_err_code ndr_pull_atsvc_JobEnum(struct ndr_pull *ndr, ndr_flags_type flags, struct atsvc_JobEnum *r);
+void ndr_print_atsvc_JobEnum(struct ndr_print *ndr, const char *name, ndr_flags_type flags, const struct atsvc_JobEnum *r);
+enum ndr_err_code ndr_push_atsvc_JobGetInfo(struct ndr_push *ndr, ndr_flags_type flags, const struct atsvc_JobGetInfo *r);
+enum ndr_err_code ndr_pull_atsvc_JobGetInfo(struct ndr_pull *ndr, ndr_flags_type flags, struct atsvc_JobGetInfo *r);
+void ndr_print_atsvc_JobGetInfo(struct ndr_print *ndr, const char *name, ndr_flags_type flags, const struct atsvc_JobGetInfo *r);
 #endif /* _HEADER_NDR_atsvc */

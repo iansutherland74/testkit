@@ -75,9 +75,9 @@ struct iovec;
  * @defgroup tsocket_address The tsocket_address abstraction
  * @ingroup tsocket
  *
- * The tsocket_address represents an socket endpoint genericly.
+ * The tsocket_address represents an socket endpoint generically.
  * As it's like an abstract class it has no specific constructor.
- * The specific constructors are descripted in later sections.
+ * The specific constructors are described in later sections.
  *
  * @{
  */
@@ -93,7 +93,7 @@ struct iovec;
  *      ipv4:192.168.1.1:143
  *
  * Callers should not try to parse the string! The should use additional methods
- * of the specific tsocket_address implemention to get more details.
+ * of the specific tsocket_address implementation to get more details.
  *
  * @param[in]  addr     The address to convert.
  *
@@ -278,7 +278,7 @@ ssize_t tdgram_sendto_recv(struct tevent_req *req,
  *
  * @param[in]  ev       The tevent_context to run on.
  *
- * @param[in]  dgram    The dgram context diconnect from.
+ * @param[in]  dgram    The dgram context to disconnect from.
  *
  * @return              Returns a 'tevent_req' handle, where the caller can
  *                      register a callback with tevent_req_set_callback().
@@ -473,6 +473,40 @@ int tstream_disconnect_recv(struct tevent_req *req,
 			    int *perrno);
 
 /**
+ * @brief Monitor the state of the stream
+ *
+ * This waits forever until a connection error happens.
+ *
+ * @param[in]  mem_ctx   The talloc memory context to use.
+ *
+ * @param[in]  ev        The tevent_context to run on.
+ *
+ * @param[in]  stream    The tstream context to work on.
+ *
+ * @return               A 'tevent_req' handle, where the caller can register
+ *                       a callback with tevent_req_set_callback(). NULL on
+ *                       fatal error.
+ */
+struct tevent_req *tstream_monitor_send(TALLOC_CTX *mem_ctx,
+					struct tevent_context *ev,
+					struct tstream_context *stream);
+
+/**
+ * @brief Get the result of a tstream_monitor_send().
+ *
+ * The caller can only have one outstanding tstream_monitor_send()
+ * at a time otherwise the caller will get *perrno = EBUSY.
+ *
+ * @param[in]  req      The tevent request from tstream_readv_send().
+ *
+ * @param[out] perrno   The error number.
+ *
+ * @return              -1 with perrno set to the actual errno.
+ *                      (0 is never returned!).
+ */
+int tstream_monitor_recv(struct tevent_req *req, int *perrno);
+
+/**
  * @}
  */
 
@@ -537,6 +571,49 @@ int _tsocket_address_inet_from_strings(TALLOC_CTX *mem_ctx,
 #define tsocket_address_inet_from_strings(mem_ctx, fam, addr, port, _addr) \
 	_tsocket_address_inet_from_strings(mem_ctx, fam, addr, port, _addr, \
 					   __location__)
+#endif
+
+#ifdef DOXYGEN
+/**
+ * @brief Create a tsocket_address for ipv4 and ipv6 endpoint addresses.
+ *
+ * @param[in]  mem_ctx  The talloc memory context to use.
+ *
+ * @param[in]  fam      The family can be can be "ipv4", "ipv6" or "ip". With
+ *                      "ip" it autodetects "ipv4" or "ipv6" based on the
+ *                      addr.
+ *
+ * @param[in]  host_port_addr   A valid ip address string based on the
+ *                      selected family (dns names are not allowed!). A port
+ *                      number may follow separated by a colon. IPv6 may be
+ *                      surrounded in square brackets, and these are required
+ *                      if appending a port number. It's valid to pass NULL,
+ *                      which gets mapped to "0.0.0.0" or "::".
+ *
+ * @param[in]  default_port  A valid port number for the default port if none
+ *                      given.
+ *
+ * @param[out] _addr    A tsocket_address pointer to store the information.
+ *
+ * @return              0 on success, -1 on error with errno set.
+ */
+int tsocket_address_inet_from_hostport_strings(TALLOC_CTX *mem_ctx,
+					       const char *fam,
+					       const char *host_port_addr,
+					       uint16_t default_port,
+					       struct tsocket_address **_addr);
+#else
+int _tsocket_address_inet_from_hostport_strings(TALLOC_CTX *mem_ctx,
+						const char *fam,
+						const char *host_port_addr,
+						uint16_t default_port,
+						struct tsocket_address **_addr,
+						const char *location);
+
+#define tsocket_address_inet_from_hostport_strings(                            \
+    mem_ctx, fam, host_port_addr, default_port, _addr)                         \
+	_tsocket_address_inet_from_hostport_strings(                           \
+	    mem_ctx, fam, host_port_addr, default_port, _addr, __location__)
 #endif
 
 /**
@@ -634,7 +711,7 @@ char *tsocket_address_unix_path(const struct tsocket_address *addr,
  * You can use this function to wrap an existing file descriptors into the
  * tdgram abstraction. After that you're not able to use this file descriptor
  * for anything else. The file descriptor will be closed when the stream gets
- * freed. If you still want to use the fd you have have to create a duplicate.
+ * freed. If you still want to use the fd you have to create a duplicate.
  *
  * @param[in]  mem_ctx  The talloc memory context to use.
  *
@@ -802,6 +879,28 @@ bool tstream_bsd_optimize_readv(struct tstream_context *stream,
 				bool on);
 
 /**
+ * @brief Request that tstream_readv_send() fails within pending data
+ *
+ * By default we allow pending data to be drained from the
+ * recv queue, before we report EPIPE when reaching EOF.
+ *
+ * For server applications it's typically useful to
+ * fail early in order to avoid useless work,
+ * as the response can't be transferred to the client anyway.
+ *
+ * @param[in]  stream   The tstream_context of a bsd socket, if this
+ *                      not a bsd socket the function does nothing.
+ *
+ * @param[in]  on       The boolean value to turn the early fail on and off.
+ *
+ * @return              The old boolean value.
+ *
+ * @see tstream_readv_send()
+ */
+bool tstream_bsd_fail_readv_first_error(struct tstream_context *stream,
+					bool on);
+
+/**
  * @brief Connect async to a TCP endpoint and create a tstream_context for the
  * stream based communication.
  *
@@ -866,7 +965,7 @@ int _tstream_inet_tcp_connect_recv(struct tevent_req *req,
  * @brief Connect async to a unix domain endpoint and create a tstream_context
  * for the stream based communication.
  *
- * Use this function to connenct asynchronously to a unix domainendpoint and
+ * Use this function to connect asynchronously to a unix domainendpoint and
  * create a tstream_context for the stream based communication.
  *
  * The callback is triggered when a socket is connected and ready for IO or an
@@ -1044,7 +1143,7 @@ ssize_t tsocket_address_bsd_sockaddr(const struct tsocket_address *addr,
  * You can use this function to wrap an existing file descriptors into the
  * tstream abstraction. After that you're not able to use this file descriptor
  * for anything else. The file descriptor will be closed when the stream gets
- * freed. If you still want to use the fd you have have to create a duplicate.
+ * freed. If you still want to use the fd you have to create a duplicate.
  *
  * @param[in]  mem_ctx  The talloc memory context to use.
  *
@@ -1208,7 +1307,7 @@ int tstream_readv_pdu_queue_recv(struct tevent_req *req, int *perrno);
  *
  * This function queues an iovector for sending to destination through an
  * existing stream socket. The async callback is triggered when the whole
- * vectror has been delivered to the underlying system socket.
+ * vector has been delivered to the underlying system socket.
  *
  * The caller needs to make sure that all non-scalar input parameters hang
  * around for the whole lifetime of the request.

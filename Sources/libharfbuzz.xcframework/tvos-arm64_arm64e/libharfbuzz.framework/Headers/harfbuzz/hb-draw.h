@@ -70,7 +70,7 @@ typedef struct hb_draw_state_t {
  *
  * The default #hb_draw_state_t at the start of glyph drawing.
  */
-#define HB_DRAW_STATE_DEFAULT {0, 0.f, 0.f, 0.f, 0.f, {0.}, {0.}, {0.}}
+#define HB_DRAW_STATE_DEFAULT {0, 0.f, 0.f, 0.f, 0.f, {0}, {0}, {0}, {0}, {0}, {0}, {0}}
 
 
 /**
@@ -92,11 +92,11 @@ typedef struct hb_draw_funcs_t hb_draw_funcs_t;
 /**
  * hb_draw_move_to_func_t:
  * @dfuncs: draw functions object
- * @draw_data: The data accompanying the draw functions
+ * @draw_data: The data accompanying the draw functions in hb_font_draw_glyph()
  * @st: current draw state
  * @to_x: X component of target point
  * @to_y: Y component of target point
- * @user_data: User data pointer passed by the caller
+ * @user_data: User data pointer passed to hb_draw_funcs_set_move_to_func()
  *
  * A virtual method for the #hb_draw_funcs_t to perform a "move-to" draw
  * operation.
@@ -112,11 +112,11 @@ typedef void (*hb_draw_move_to_func_t) (hb_draw_funcs_t *dfuncs, void *draw_data
 /**
  * hb_draw_line_to_func_t:
  * @dfuncs: draw functions object
- * @draw_data: The data accompanying the draw functions
+ * @draw_data: The data accompanying the draw functions in hb_font_draw_glyph()
  * @st: current draw state
  * @to_x: X component of target point
  * @to_y: Y component of target point
- * @user_data: User data pointer passed by the caller
+ * @user_data: User data pointer passed to hb_draw_funcs_set_line_to_func()
  *
  * A virtual method for the #hb_draw_funcs_t to perform a "line-to" draw
  * operation.
@@ -132,13 +132,13 @@ typedef void (*hb_draw_line_to_func_t) (hb_draw_funcs_t *dfuncs, void *draw_data
 /**
  * hb_draw_quadratic_to_func_t:
  * @dfuncs: draw functions object
- * @draw_data: The data accompanying the draw functions
+ * @draw_data: The data accompanying the draw functions in hb_font_draw_glyph()
  * @st: current draw state
  * @control_x: X component of control point
  * @control_y: Y component of control point
  * @to_x: X component of target point
  * @to_y: Y component of target point
- * @user_data: User data pointer passed by the caller
+ * @user_data: User data pointer passed to hb_draw_funcs_set_quadratic_to_func()
  *
  * A virtual method for the #hb_draw_funcs_t to perform a "quadratic-to" draw
  * operation.
@@ -155,7 +155,7 @@ typedef void (*hb_draw_quadratic_to_func_t) (hb_draw_funcs_t *dfuncs, void *draw
 /**
  * hb_draw_cubic_to_func_t:
  * @dfuncs: draw functions object
- * @draw_data: The data accompanying the draw functions
+ * @draw_data: The data accompanying the draw functions in hb_font_draw_glyph()
  * @st: current draw state
  * @control1_x: X component of first control point
  * @control1_y: Y component of first control point
@@ -163,7 +163,7 @@ typedef void (*hb_draw_quadratic_to_func_t) (hb_draw_funcs_t *dfuncs, void *draw
  * @control2_y: Y component of second control point
  * @to_x: X component of target point
  * @to_y: Y component of target point
- * @user_data: User data pointer passed by the caller
+ * @user_data: User data pointer passed to hb_draw_funcs_set_cubic_to_func()
  *
  * A virtual method for the #hb_draw_funcs_t to perform a "cubic-to" draw
  * operation.
@@ -181,9 +181,9 @@ typedef void (*hb_draw_cubic_to_func_t) (hb_draw_funcs_t *dfuncs, void *draw_dat
 /**
  * hb_draw_close_path_func_t:
  * @dfuncs: draw functions object
- * @draw_data: The data accompanying the draw functions
+ * @draw_data: The data accompanying the draw functions in hb_font_draw_glyph()
  * @st: current draw state
- * @user_data: User data pointer passed by the caller
+ * @user_data: User data pointer passed to hb_draw_funcs_set_close_path_func()
  *
  * A virtual method for the #hb_draw_funcs_t to perform a "close-path" draw
  * operation.
@@ -280,10 +280,25 @@ HB_EXTERN hb_draw_funcs_t *
 hb_draw_funcs_create (void);
 
 HB_EXTERN hb_draw_funcs_t *
+hb_draw_funcs_get_empty (void);
+
+HB_EXTERN hb_draw_funcs_t *
 hb_draw_funcs_reference (hb_draw_funcs_t *dfuncs);
 
 HB_EXTERN void
 hb_draw_funcs_destroy (hb_draw_funcs_t *dfuncs);
+
+HB_EXTERN hb_bool_t
+hb_draw_funcs_set_user_data (hb_draw_funcs_t *dfuncs,
+			     hb_user_data_key_t *key,
+			     void *              data,
+			     hb_destroy_func_t   destroy,
+			     hb_bool_t           replace);
+
+
+HB_EXTERN void *
+hb_draw_funcs_get_user_data (const hb_draw_funcs_t *dfuncs,
+			     hb_user_data_key_t       *key);
 
 HB_EXTERN void
 hb_draw_funcs_make_immutable (hb_draw_funcs_t *dfuncs);
@@ -318,6 +333,58 @@ hb_draw_cubic_to (hb_draw_funcs_t *dfuncs, void *draw_data,
 HB_EXTERN void
 hb_draw_close_path (hb_draw_funcs_t *dfuncs, void *draw_data,
 		    hb_draw_state_t *st);
+
+
+/* Shape helpers.
+ *
+ * Emit common primitives (tapered line, rectangle, circle) into
+ * any pen.  The helpers are thin wrappers over the individual
+ * move_to / line_to / cubic_to / close_path calls: callers can
+ * always hand-roll the same shapes if they need a variation.
+ *
+ * For rect / circle the @stroke_width parameter selects between
+ * filled and stroked: a positive finite value is the stroke
+ * width of the outline; NaN means "filled" (no stroke).
+ */
+
+/**
+ * hb_draw_line_cap_t:
+ * @HB_DRAW_LINE_CAP_BUTT:   No cap; the line ends exactly at
+ *   its endpoint.
+ * @HB_DRAW_LINE_CAP_SQUARE: Square cap; the line is extended
+ *   past its endpoint by half the local stroke width.  Useful
+ *   for composing closed shapes from line segments (e.g. a
+ *   rectangle made from four lines).
+ *
+ * End-cap shape for hb_draw_line().
+ *
+ * Since: 14.2.0
+ **/
+typedef enum {
+  HB_DRAW_LINE_CAP_BUTT   = 0,
+  HB_DRAW_LINE_CAP_SQUARE = 1,
+} hb_draw_line_cap_t;
+
+HB_EXTERN void
+hb_draw_line (hb_draw_funcs_t *dfuncs, void *draw_data,
+	      hb_draw_state_t *st,
+	      float x0, float y0, float w0,
+	      float x1, float y1, float w1,
+	      hb_draw_line_cap_t cap);
+
+HB_EXTERN void
+hb_draw_rectangle (hb_draw_funcs_t *dfuncs, void *draw_data,
+		   hb_draw_state_t *st,
+		   float x, float y,
+		   float w, float h,
+	      float stroke_width);
+
+HB_EXTERN void
+hb_draw_circle (hb_draw_funcs_t *dfuncs, void *draw_data,
+		hb_draw_state_t *st,
+		float cx, float cy,
+		float r,
+		float stroke_width);
 
 
 HB_END_DECLS

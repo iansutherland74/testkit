@@ -220,7 +220,7 @@ enum drsuapi_DsExtendedOperation
 	DRSUAPI_EXOP_REPL_SECRET=(int)(0x00000007)
 }
 #else
- { __do_not_use_enum_drsuapi_DsExtendedOperation=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsExtendedOperation=INT_MAX}
 #define DRSUAPI_EXOP_NONE ( 0x00000000 )
 #define DRSUAPI_EXOP_FSMO_REQ_ROLE ( 0x00000001 )
 #define DRSUAPI_EXOP_FSMO_RID_ALLOC ( 0x00000002 )
@@ -254,7 +254,7 @@ enum drsuapi_DsExtendedError
 	DRSUAPI_EXOP_ERR_PARAM_ERROR=(int)(0x00000010)
 }
 #else
- { __do_not_use_enum_drsuapi_DsExtendedError=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsExtendedError=INT_MAX}
 #define DRSUAPI_EXOP_ERR_NONE ( 0x00000000 )
 #define DRSUAPI_EXOP_ERR_SUCCESS ( 0x00000001 )
 #define DRSUAPI_EXOP_ERR_UNKNOWN_OP ( 0x00000002 )
@@ -311,7 +311,7 @@ enum drsuapi_DsObjectClassId
 	DRSUAPI_OBJECTCLASS_attributeSchema=(int)(0x0003000e)
 }
 #else
- { __do_not_use_enum_drsuapi_DsObjectClassId=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsObjectClassId=INT_MAX}
 #define DRSUAPI_OBJECTCLASS_top ( 0x00010000 )
 #define DRSUAPI_OBJECTCLASS_classSchema ( 0x0003000d )
 #define DRSUAPI_OBJECTCLASS_attributeSchema ( 0x0003000e )
@@ -437,7 +437,7 @@ enum drsuapi_DsAttributeId
 	DRSUAPI_ATTID_INVALID=(int)(0xFFFFFFFF)
 }
 #else
- { __do_not_use_enum_drsuapi_DsAttributeId=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsAttributeId=INT_MAX}
 #define DRSUAPI_ATTID_objectClass ( 0x00000000 )
 #define DRSUAPI_ATTID_cn ( 0x00000003 )
 #define DRSUAPI_ATTID_ou ( 0x0000000b )
@@ -753,36 +753,36 @@ struct drsuapi_DsGetNCChangesMSZIPCtr6 {
 	struct drsuapi_DsGetNCChangesCtr6TS *ts;/* [compression(NDR_COMPRESSION_MSZIP,compressed_length,decompressed_length),subcontext(4),subcontext_size(compressed_length),unique] */
 }/* [nopush] */;
 
-struct drsuapi_DsGetNCChangesXPRESSCtr1 {
+struct drsuapi_DsGetNCChangesWIN2K3_LZ77_DIRECT2Ctr1 {
 	uint32_t decompressed_length;
 	uint32_t compressed_length;
-	struct drsuapi_DsGetNCChangesCtr1TS *ts;/* [compression(NDR_COMPRESSION_XPRESS,compressed_length,decompressed_length),subcontext(4),subcontext_size(compressed_length),unique] */
+	struct drsuapi_DsGetNCChangesCtr1TS *ts;/* [compression(NDR_COMPRESSION_WIN2K3_LZ77_DIRECT2,compressed_length,decompressed_length),subcontext(4),subcontext_size(compressed_length),unique] */
 }/* [nopush] */;
 
-struct drsuapi_DsGetNCChangesXPRESSCtr6 {
+struct drsuapi_DsGetNCChangesWIN2K3_LZ77_DIRECT2Ctr6 {
 	uint32_t decompressed_length;
 	uint32_t compressed_length;
-	struct drsuapi_DsGetNCChangesCtr6TS *ts;/* [compression(NDR_COMPRESSION_XPRESS,compressed_length,decompressed_length),subcontext(4),subcontext_size(compressed_length),unique] */
+	struct drsuapi_DsGetNCChangesCtr6TS *ts;/* [compression(NDR_COMPRESSION_WIN2K3_LZ77_DIRECT2,compressed_length,decompressed_length),subcontext(4),subcontext_size(compressed_length),unique] */
 }/* [nopush] */;
 
 enum drsuapi_DsGetNCChangesCompressionType
 #ifndef USE_UINT_ENUMS
  {
 	DRSUAPI_COMPRESSION_TYPE_MSZIP=(int)(2),
-	DRSUAPI_COMPRESSION_TYPE_XPRESS=(int)(3)
+	DRSUAPI_COMPRESSION_TYPE_WIN2K3_LZ77_DIRECT2=(int)(3)
 }
 #else
- { __do_not_use_enum_drsuapi_DsGetNCChangesCompressionType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsGetNCChangesCompressionType=INT_MAX}
 #define DRSUAPI_COMPRESSION_TYPE_MSZIP ( 2 )
-#define DRSUAPI_COMPRESSION_TYPE_XPRESS ( 3 )
+#define DRSUAPI_COMPRESSION_TYPE_WIN2K3_LZ77_DIRECT2 ( 3 )
 #endif
 ;
 
 union drsuapi_DsGetNCChangesCompressedCtr {
 	struct drsuapi_DsGetNCChangesMSZIPCtr1 mszip1;/* [case(1|(DRSUAPI_COMPRESSION_TYPE_MSZIP<<16))] */
 	struct drsuapi_DsGetNCChangesMSZIPCtr6 mszip6;/* [case(6|(DRSUAPI_COMPRESSION_TYPE_MSZIP<<16))] */
-	struct drsuapi_DsGetNCChangesXPRESSCtr1 xpress1;/* [case(1|(DRSUAPI_COMPRESSION_TYPE_XPRESS<<16))] */
-	struct drsuapi_DsGetNCChangesXPRESSCtr6 xpress6;/* [case(6|(DRSUAPI_COMPRESSION_TYPE_XPRESS<<16))] */
+	struct drsuapi_DsGetNCChangesWIN2K3_LZ77_DIRECT2Ctr1 xpress1;/* [case(1|(DRSUAPI_COMPRESSION_TYPE_WIN2K3_LZ77_DIRECT2<<16))] */
+	struct drsuapi_DsGetNCChangesWIN2K3_LZ77_DIRECT2Ctr6 xpress6;/* [case(6|(DRSUAPI_COMPRESSION_TYPE_WIN2K3_LZ77_DIRECT2<<16))] */
 }/* [flag(LIBNDR_PRINT_ARRAY_HEX),nodiscriminant] */;
 
 struct drsuapi_DsGetNCChangesCtr2 {
@@ -846,8 +846,8 @@ union drsuapi_DsReplicaDelRequest {
 
 struct drsuapi_DsReplicaModRequest1 {
 	struct drsuapi_DsReplicaObjectIdentifier *naming_context;/* [ref] */
-	struct GUID source_dra;
-	const char *source_dra_address;/* [charset(UTF16),unique] */
+	struct GUID source_dsa;
+	const char *source_dsa_address;/* [charset(UTF16),unique] */
 	uint8_t schedule[84];
 	uint32_t replica_flags;
 	uint32_t modify_fields;
@@ -870,7 +870,7 @@ enum drsuapi_DsMembershipType
 	DRSUAPI_DS_MEMBERSHIP_TYPE_DOMAIN_GROUPS2=(int)(7)
 }
 #else
- { __do_not_use_enum_drsuapi_DsMembershipType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsMembershipType=INT_MAX}
 #define DRSUAPI_DS_MEMBERSHIP_TYPE_UNIVERSAL_AND_DOMAIN_GROUPS ( 1 )
 #define DRSUAPI_DS_MEMBERSHIP_TYPE_DOMAIN_LOCAL_GROUPS ( 2 )
 #define DRSUAPI_DS_MEMBERSHIP_TYPE_DOMAIN_GROUPS ( 3 )
@@ -952,7 +952,7 @@ enum drsuapi_DsNameStatus
 	DRSUAPI_DS_NAME_STATUS_TRUST_REFERRAL=(int)(7)
 }
 #else
- { __do_not_use_enum_drsuapi_DsNameStatus=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsNameStatus=INT_MAX}
 #define DRSUAPI_DS_NAME_STATUS_OK ( 0 )
 #define DRSUAPI_DS_NAME_STATUS_RESOLVE_ERROR ( 1 )
 #define DRSUAPI_DS_NAME_STATUS_NOT_FOUND ( 2 )
@@ -974,7 +974,7 @@ enum drsuapi_DsNameFlags
 	DRSUAPI_DS_NAME_FLAG_TRUST_REFERRAL=(int)(0x8)
 }
 #else
- { __do_not_use_enum_drsuapi_DsNameFlags=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsNameFlags=INT_MAX}
 #define DRSUAPI_DS_NAME_FLAG_NO_FLAGS ( 0x0 )
 #define DRSUAPI_DS_NAME_FLAG_SYNTACTICAL_ONLY ( 0x1 )
 #define DRSUAPI_DS_NAME_FLAG_EVAL_AT_DC ( 0x2 )
@@ -1016,7 +1016,7 @@ enum drsuapi_DsNameFormat
 	DRSUAPI_DS_NAME_FORMAT_LIST_SITES=(int)(0xFFFFFFFF)
 }
 #else
- { __do_not_use_enum_drsuapi_DsNameFormat=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsNameFormat=INT_MAX}
 #define DRSUAPI_DS_NAME_FORMAT_UNKNOWN ( 0x00000000 )
 #define DRSUAPI_DS_NAME_FORMAT_FQDN_1779 ( 0x00000001 )
 #define DRSUAPI_DS_NAME_FORMAT_NT4_ACCOUNT ( 0x00000002 )
@@ -1089,7 +1089,7 @@ enum drsuapi_DsSpnOperation
 	DRSUAPI_DS_SPN_OPERATION_DELETE=(int)(2)
 }
 #else
- { __do_not_use_enum_drsuapi_DsSpnOperation=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsSpnOperation=INT_MAX}
 #define DRSUAPI_DS_SPN_OPERATION_ADD ( 0 )
 #define DRSUAPI_DS_SPN_OPERATION_REPLACE ( 1 )
 #define DRSUAPI_DS_SPN_OPERATION_DELETE ( 2 )
@@ -1143,7 +1143,7 @@ enum drsuapi_DsGetDCInfoCtrLevels
 	DRSUAPI_DC_CONNECTION_CTR_01=(int)(0xFFFFFFFF)
 }
 #else
- { __do_not_use_enum_drsuapi_DsGetDCInfoCtrLevels=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsGetDCInfoCtrLevels=INT_MAX}
 #define DRSUAPI_DC_INFO_CTR_1 ( 1 )
 #define DRSUAPI_DC_INFO_CTR_2 ( 2 )
 #define DRSUAPI_DC_INFO_CTR_3 ( 3 )
@@ -1260,7 +1260,7 @@ enum drsuapi_DsAddEntry_DirErr
 	DRSUAPI_DIRERR_SYSTEM=(int)(7)
 }
 #else
- { __do_not_use_enum_drsuapi_DsAddEntry_DirErr=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsAddEntry_DirErr=INT_MAX}
 #define DRSUAPI_DIRERR_OK ( 0 )
 #define DRSUAPI_DIRERR_ATTRIBUTE ( 1 )
 #define DRSUAPI_DIRERR_NAME ( 2 )
@@ -1290,7 +1290,7 @@ enum drsuapi_SecBufferType
 	DRSUAPI_SECBUFFER_READONLY=(int)(0x80000000)
 }
 #else
- { __do_not_use_enum_drsuapi_SecBufferType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_SecBufferType=INT_MAX}
 #define DRSUAPI_SECBUFFER_EMPTY ( 0x00000000 )
 #define DRSUAPI_SECBUFFER_DATA ( 0x00000001 )
 #define DRSUAPI_SECBUFFER_TOKEN ( 0x00000002 )
@@ -1376,7 +1376,7 @@ enum drsuapi_DsAddEntry_RefType
 	DRSUAPI_CH_REFTYPE_CROSS=(int)(0x0003)
 }
 #else
- { __do_not_use_enum_drsuapi_DsAddEntry_RefType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsAddEntry_RefType=INT_MAX}
 #define DRSUAPI_CH_REFTYPE_SUPERIOR ( 0x0000 )
 #define DRSUAPI_CH_REFTYPE_SUBORDINATE ( 0x0001 )
 #define DRSUAPI_CH_REFTYPE_NSSR ( 0x0002 )
@@ -1392,7 +1392,7 @@ enum drsuapi_DsAddEntry_ChoiceType
 	DRSUAPI_SE_CHOICE_WHOLE_SUBTREE=(int)(0x02)
 }
 #else
- { __do_not_use_enum_drsuapi_DsAddEntry_ChoiceType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsAddEntry_ChoiceType=INT_MAX}
 #define DRSUAPI_SE_CHOICE_BASE_ONLY ( 0x00 )
 #define DRSUAPI_SE_CHOICE_IMMED_CHLDRN ( 0x01 )
 #define DRSUAPI_SE_CHOICE_WHOLE_SUBTREE ( 0x02 )
@@ -1493,7 +1493,7 @@ enum drsuapi_DsReplicaGetInfoLevel
 	DRSUAPI_DS_REPLICA_GET_INFO2=(int)(2)
 }
 #else
- { __do_not_use_enum_drsuapi_DsReplicaGetInfoLevel=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsReplicaGetInfoLevel=INT_MAX}
 #define DRSUAPI_DS_REPLICA_GET_INFO ( 1 )
 #define DRSUAPI_DS_REPLICA_GET_INFO2 ( 2 )
 #endif
@@ -1519,7 +1519,7 @@ enum drsuapi_DsReplicaInfoType
 	DRSUAPI_DS_REPLICA_INFO_SERVER_OUTGOING_CALLS=(int)(-6)
 }
 #else
- { __do_not_use_enum_drsuapi_DsReplicaInfoType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsReplicaInfoType=INT_MAX}
 #define DRSUAPI_DS_REPLICA_INFO_NEIGHBORS ( 0 )
 #define DRSUAPI_DS_REPLICA_INFO_CURSORS ( 1 )
 #define DRSUAPI_DS_REPLICA_INFO_OBJ_METADATA ( 2 )
@@ -1629,7 +1629,7 @@ enum drsuapi_DsReplicaOpType
 	DRSUAPI_DS_REPLICA_OP_TYPE_UPDATE_REFS=(int)(4)
 }
 #else
- { __do_not_use_enum_drsuapi_DsReplicaOpType=0x7FFFFFFF}
+ { __do_not_use_enum_drsuapi_DsReplicaOpType=INT_MAX}
 #define DRSUAPI_DS_REPLICA_OP_TYPE_SYNC ( 0 )
 #define DRSUAPI_DS_REPLICA_OP_TYPE_ADD ( 1 )
 #define DRSUAPI_DS_REPLICA_OP_TYPE_DELETE ( 2 )

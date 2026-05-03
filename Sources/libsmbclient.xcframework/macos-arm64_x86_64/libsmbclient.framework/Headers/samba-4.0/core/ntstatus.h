@@ -1,4 +1,4 @@
-/* 
+/*
    Unix SMB/CIFS implementation.
    NT error code constants
    Copyright (C) Andrew Tridgell              1992-2000
@@ -23,12 +23,14 @@
 #ifndef _NTSTATUS_H
 #define _NTSTATUS_H
 
+#include <stdint.h>
+
 #include <core/ntstatus_gen.h>
 
-/* the following rather strange looking definitions of NTSTATUS 
+/* the following rather strange looking definitions of NTSTATUS
    are there in order to catch common coding errors where different error types
    are mixed up. This is especially important as we slowly convert Samba
-   from using bool for internal functions 
+   from using bool for internal functions
 */
 
 #if defined(HAVE_IMMEDIATE_STRUCTURES)
@@ -49,14 +51,11 @@ typedef uint32_t NTSTATUS;
 #define NT_STATUS_SMB_NO_PREAUTH_INTEGRITY_HASH_OVERLAP	NT_STATUS(0xC05D0000)
 
 /* Other error codes that aren't in the list we use */
-#define NT_STATUS_OK			  NT_STATUS_SUCCESS
-
 #define STATUS_MORE_ENTRIES		  NT_STATUS_MORE_ENTRIES
 #define STATUS_BUFFER_OVERFLOW		  NT_STATUS_BUFFER_OVERFLOW
 #define STATUS_NO_MORE_FILES		  NT_STATUS_NO_MORE_FILES
 #define STATUS_INVALID_EA_NAME		  NT_STATUS_INVALID_EA_NAME
 #define STATUS_SOME_UNMAPPED 		  NT_STATUS_SOME_NOT_MAPPED
-#define NT_STATUS_INACCESSIBLE_SYSTEM_SHORTCUT		NT_STATUS(0x8000002d)
 
 #define NT_STATUS_ABIOS_NOT_PRESENT 		NT_STATUS(0xC0000000 | 0x010f)
 #define NT_STATUS_ABIOS_LID_NOT_EXIST 		NT_STATUS(0xC0000000 | 0x0110)
@@ -100,7 +99,7 @@ typedef uint32_t NTSTATUS;
 const char *nt_errstr(NTSTATUS nt_code);
 
 /************************************************************************
- Print friendler version fo NT error code
+ Print friendlier version of NT error code
  ***********************************************************************/
 const char *get_friendly_nt_error_msg(NTSTATUS nt_code);
 
@@ -140,7 +139,7 @@ NTSTATUS nt_status_string_to_code(const char *nt_status_str);
 	}\
 } while (0)
 
-/* This varient is for when you want to free a local
+/* This variant is for when you want to free a local
    temporary memory context in the error path */
 #define NT_STATUS_HAVE_NO_MEMORY_AND_FREE(x, ctx) do {	\
 	if (!(x)) {\

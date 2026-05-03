@@ -963,76 +963,500 @@ NTSTATUS dcerpc_svcctl_QueryServiceStatusEx(struct dcerpc_binding_handle *h,
 					    uint32_t *_needed /* [out] [range(0,8192),ref] */,
 					    WERROR *result);
 
-struct tevent_req *dcerpc_EnumServicesStatusExA_r_send(TALLOC_CTX *mem_ctx,
+struct tevent_req *dcerpc_svcctl_EnumServicesStatusExA_r_send(TALLOC_CTX *mem_ctx,
 	struct tevent_context *ev,
 	struct dcerpc_binding_handle *h,
-	struct EnumServicesStatusExA *r);
-NTSTATUS dcerpc_EnumServicesStatusExA_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
-NTSTATUS dcerpc_EnumServicesStatusExA_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct EnumServicesStatusExA *r);
-struct tevent_req *dcerpc_EnumServicesStatusExA_send(TALLOC_CTX *mem_ctx,
-						     struct tevent_context *ev,
-						     struct dcerpc_binding_handle *h,
-						     struct policy_handle *_scmanager /* [in] [ref] */,
-						     uint32_t _info_level /* [in]  */,
-						     uint32_t _type /* [in]  */,
-						     enum svcctl_ServiceState _state /* [in]  */,
-						     uint8_t *_services /* [out]  */,
-						     uint32_t _offered /* [in]  */,
-						     uint32_t *_needed /* [out] [ref] */,
-						     uint32_t *_service_returned /* [out] [ref] */,
-						     uint32_t *_resume_handle /* [in,out] [unique] */,
-						     const char **_group_name /* [out] [charset(UTF16),ref] */);
-NTSTATUS dcerpc_EnumServicesStatusExA_recv(struct tevent_req *req,
-					   TALLOC_CTX *mem_ctx,
-					   WERROR *result);
-NTSTATUS dcerpc_EnumServicesStatusExA(struct dcerpc_binding_handle *h,
-				      TALLOC_CTX *mem_ctx,
-				      struct policy_handle *_scmanager /* [in] [ref] */,
-				      uint32_t _info_level /* [in]  */,
-				      uint32_t _type /* [in]  */,
-				      enum svcctl_ServiceState _state /* [in]  */,
-				      uint8_t *_services /* [out]  */,
-				      uint32_t _offered /* [in]  */,
-				      uint32_t *_needed /* [out] [ref] */,
-				      uint32_t *_service_returned /* [out] [ref] */,
-				      uint32_t *_resume_handle /* [in,out] [unique] */,
-				      const char **_group_name /* [out] [charset(UTF16),ref] */,
-				      WERROR *result);
+	struct svcctl_EnumServicesStatusExA *r);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExA_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExA_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_EnumServicesStatusExA *r);
+struct tevent_req *dcerpc_svcctl_EnumServicesStatusExA_send(TALLOC_CTX *mem_ctx,
+							    struct tevent_context *ev,
+							    struct dcerpc_binding_handle *h,
+							    struct policy_handle *_scmanager /* [in] [ref] */,
+							    uint32_t _info_level /* [in]  */,
+							    uint32_t _type /* [in]  */,
+							    enum svcctl_ServiceState _state /* [in]  */,
+							    uint8_t *_services /* [out]  */,
+							    uint32_t _offered /* [in]  */,
+							    uint32_t *_needed /* [out] [ref] */,
+							    uint32_t *_service_returned /* [out] [ref] */,
+							    uint32_t *_resume_handle /* [in,out] [unique] */,
+							    const char **_group_name /* [out] [charset(UTF16),ref] */);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExA_recv(struct tevent_req *req,
+						  TALLOC_CTX *mem_ctx,
+						  WERROR *result);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExA(struct dcerpc_binding_handle *h,
+					     TALLOC_CTX *mem_ctx,
+					     struct policy_handle *_scmanager /* [in] [ref] */,
+					     uint32_t _info_level /* [in]  */,
+					     uint32_t _type /* [in]  */,
+					     enum svcctl_ServiceState _state /* [in]  */,
+					     uint8_t *_services /* [out]  */,
+					     uint32_t _offered /* [in]  */,
+					     uint32_t *_needed /* [out] [ref] */,
+					     uint32_t *_service_returned /* [out] [ref] */,
+					     uint32_t *_resume_handle /* [in,out] [unique] */,
+					     const char **_group_name /* [out] [charset(UTF16),ref] */,
+					     WERROR *result);
 
-struct tevent_req *dcerpc_EnumServicesStatusExW_r_send(TALLOC_CTX *mem_ctx,
+struct tevent_req *dcerpc_svcctl_EnumServicesStatusExW_r_send(TALLOC_CTX *mem_ctx,
 	struct tevent_context *ev,
 	struct dcerpc_binding_handle *h,
-	struct EnumServicesStatusExW *r);
-NTSTATUS dcerpc_EnumServicesStatusExW_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
-NTSTATUS dcerpc_EnumServicesStatusExW_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct EnumServicesStatusExW *r);
-struct tevent_req *dcerpc_EnumServicesStatusExW_send(TALLOC_CTX *mem_ctx,
+	struct svcctl_EnumServicesStatusExW *r);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExW_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExW_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_EnumServicesStatusExW *r);
+struct tevent_req *dcerpc_svcctl_EnumServicesStatusExW_send(TALLOC_CTX *mem_ctx,
+							    struct tevent_context *ev,
+							    struct dcerpc_binding_handle *h,
+							    struct policy_handle *_scmanager /* [in] [ref] */,
+							    uint32_t _info_level /* [in]  */,
+							    uint32_t _type /* [in]  */,
+							    enum svcctl_ServiceState _state /* [in]  */,
+							    uint8_t *_services /* [out] [ref,size_is(offered)] */,
+							    uint32_t _offered /* [in] [range(0,0x40000)] */,
+							    uint32_t *_needed /* [out] [range(0,0x40000),ref] */,
+							    uint32_t *_service_returned /* [out] [range(0,0x40000),ref] */,
+							    uint32_t *_resume_handle /* [in,out] [range(0,0x40000),unique] */,
+							    const char *_group_name /* [in] [charset(UTF16),unique] */);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExW_recv(struct tevent_req *req,
+						  TALLOC_CTX *mem_ctx,
+						  WERROR *result);
+NTSTATUS dcerpc_svcctl_EnumServicesStatusExW(struct dcerpc_binding_handle *h,
+					     TALLOC_CTX *mem_ctx,
+					     struct policy_handle *_scmanager /* [in] [ref] */,
+					     uint32_t _info_level /* [in]  */,
+					     uint32_t _type /* [in]  */,
+					     enum svcctl_ServiceState _state /* [in]  */,
+					     uint8_t *_services /* [out] [ref,size_is(offered)] */,
+					     uint32_t _offered /* [in] [range(0,0x40000)] */,
+					     uint32_t *_needed /* [out] [range(0,0x40000),ref] */,
+					     uint32_t *_service_returned /* [out] [range(0,0x40000),ref] */,
+					     uint32_t *_resume_handle /* [in,out] [range(0,0x40000),unique] */,
+					     const char *_group_name /* [in] [charset(UTF16),unique] */,
+					     WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_CreateServiceWOW64A_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_CreateServiceWOW64A *r);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64A_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64A_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_CreateServiceWOW64A *r);
+struct tevent_req *dcerpc_svcctl_CreateServiceWOW64A_send(TALLOC_CTX *mem_ctx,
+							  struct tevent_context *ev,
+							  struct dcerpc_binding_handle *h,
+							  struct policy_handle _hSCManager /* [in]  */,
+							  const char *_lpServiceName /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),ref] */,
+							  const char *_lpDisplayName /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */,
+							  uint32_t _dwDesiredAccess /* [in]  */,
+							  uint32_t _dwServiceType /* [in]  */,
+							  uint32_t _dwStartType /* [in]  */,
+							  uint32_t _dwErrorControl /* [in]  */,
+							  const char *_lpBinaryPathName /* [in] [charset(DOS),range(0,SC_MAX_PATH_LENGTH),ref] */,
+							  const char *_lpLoadOrderGroup /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */,
+							  uint32_t *_lpdwTagId /* [in,out] [unique] */,
+							  uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+							  uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+							  const char *_lpServiceStartName /* [in] [charset(DOS),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+							  uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+							  uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+							  struct policy_handle *_lpServiceHandle /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64A_recv(struct tevent_req *req,
+						TALLOC_CTX *mem_ctx,
+						WERROR *result);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64A(struct dcerpc_binding_handle *h,
+					   TALLOC_CTX *mem_ctx,
+					   struct policy_handle _hSCManager /* [in]  */,
+					   const char *_lpServiceName /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),ref] */,
+					   const char *_lpDisplayName /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					   uint32_t _dwDesiredAccess /* [in]  */,
+					   uint32_t _dwServiceType /* [in]  */,
+					   uint32_t _dwStartType /* [in]  */,
+					   uint32_t _dwErrorControl /* [in]  */,
+					   const char *_lpBinaryPathName /* [in] [charset(DOS),range(0,SC_MAX_PATH_LENGTH),ref] */,
+					   const char *_lpLoadOrderGroup /* [in] [charset(DOS),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					   uint32_t *_lpdwTagId /* [in,out] [unique] */,
+					   uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+					   uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+					   const char *_lpServiceStartName /* [in] [charset(DOS),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+					   uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+					   uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+					   struct policy_handle *_lpServiceHandle /* [out] [ref] */,
+					   WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_CreateServiceWOW64W_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_CreateServiceWOW64W *r);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64W_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64W_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_CreateServiceWOW64W *r);
+struct tevent_req *dcerpc_svcctl_CreateServiceWOW64W_send(TALLOC_CTX *mem_ctx,
+							  struct tevent_context *ev,
+							  struct dcerpc_binding_handle *h,
+							  struct policy_handle _hSCManager /* [in]  */,
+							  const char *_lpServiceName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */,
+							  const char *_lpDisplayName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+							  uint32_t _dwDesiredAccess /* [in]  */,
+							  uint32_t _dwServiceType /* [in]  */,
+							  uint32_t _dwStartType /* [in]  */,
+							  uint32_t _dwErrorControl /* [in]  */,
+							  const char *_lpBinaryPathName /* [in] [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */,
+							  const char *_lpLoadOrderGroup /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+							  uint32_t *_lpdwTagId /* [in,out] [unique] */,
+							  uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+							  uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+							  const char *_lpServiceStartName /* [in] [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+							  uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+							  uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+							  struct policy_handle *_lpServiceHandle /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64W_recv(struct tevent_req *req,
+						TALLOC_CTX *mem_ctx,
+						WERROR *result);
+NTSTATUS dcerpc_svcctl_CreateServiceWOW64W(struct dcerpc_binding_handle *h,
+					   TALLOC_CTX *mem_ctx,
+					   struct policy_handle _hSCManager /* [in]  */,
+					   const char *_lpServiceName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */,
+					   const char *_lpDisplayName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					   uint32_t _dwDesiredAccess /* [in]  */,
+					   uint32_t _dwServiceType /* [in]  */,
+					   uint32_t _dwStartType /* [in]  */,
+					   uint32_t _dwErrorControl /* [in]  */,
+					   const char *_lpBinaryPathName /* [in] [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */,
+					   const char *_lpLoadOrderGroup /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					   uint32_t *_lpdwTagId /* [in,out] [unique] */,
+					   uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+					   uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+					   const char *_lpServiceStartName /* [in] [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+					   uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+					   uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+					   struct policy_handle *_lpServiceHandle /* [out] [ref] */,
+					   WERROR *result);
+
+struct tevent_req *dcerpc_Opnum46NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum46NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum46NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum46NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum46NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum46NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum46NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum46NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_svcctl_NotifyServiceStatusChange_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_NotifyServiceStatusChange *r);
+NTSTATUS dcerpc_svcctl_NotifyServiceStatusChange_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_NotifyServiceStatusChange_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_NotifyServiceStatusChange *r);
+struct tevent_req *dcerpc_svcctl_NotifyServiceStatusChange_send(TALLOC_CTX *mem_ctx,
+								struct tevent_context *ev,
+								struct dcerpc_binding_handle *h,
+								struct policy_handle _hService /* [in]  */,
+								struct SC_RPC_NOTIFY_PARAMS _NotifyParams /* [in]  */,
+								struct GUID *_pClientProcessGuid /* [in] [ref] */,
+								struct GUID *_pSCMProcessGuid /* [out] [ref] */,
+								uint32_t *_pfCreateRemoteQueue /* [out] [ref] */,
+								struct policy_handle *_phNotify /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_NotifyServiceStatusChange_recv(struct tevent_req *req,
+						      TALLOC_CTX *mem_ctx,
+						      WERROR *result);
+NTSTATUS dcerpc_svcctl_NotifyServiceStatusChange(struct dcerpc_binding_handle *h,
+						 TALLOC_CTX *mem_ctx,
+						 struct policy_handle _hService /* [in]  */,
+						 struct SC_RPC_NOTIFY_PARAMS _NotifyParams /* [in]  */,
+						 struct GUID *_pClientProcessGuid /* [in] [ref] */,
+						 struct GUID *_pSCMProcessGuid /* [out] [ref] */,
+						 uint32_t *_pfCreateRemoteQueue /* [out] [ref] */,
+						 struct policy_handle *_phNotify /* [out] [ref] */,
+						 WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_GetNotifyResults_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_GetNotifyResults *r);
+NTSTATUS dcerpc_svcctl_GetNotifyResults_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_GetNotifyResults_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_GetNotifyResults *r);
+struct tevent_req *dcerpc_svcctl_GetNotifyResults_send(TALLOC_CTX *mem_ctx,
+						       struct tevent_context *ev,
+						       struct dcerpc_binding_handle *h,
+						       struct policy_handle _hNotify /* [in]  */,
+						       struct SC_RPC_NOTIFY_PARAMS_LIST *_ppNotifyParams /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_GetNotifyResults_recv(struct tevent_req *req,
+					     TALLOC_CTX *mem_ctx,
+					     WERROR *result);
+NTSTATUS dcerpc_svcctl_GetNotifyResults(struct dcerpc_binding_handle *h,
+					TALLOC_CTX *mem_ctx,
+					struct policy_handle _hNotify /* [in]  */,
+					struct SC_RPC_NOTIFY_PARAMS_LIST *_ppNotifyParams /* [out] [ref] */,
+					WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_CloseNotifyHandle_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_CloseNotifyHandle *r);
+NTSTATUS dcerpc_svcctl_CloseNotifyHandle_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_CloseNotifyHandle_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_CloseNotifyHandle *r);
+struct tevent_req *dcerpc_svcctl_CloseNotifyHandle_send(TALLOC_CTX *mem_ctx,
+							struct tevent_context *ev,
+							struct dcerpc_binding_handle *h,
+							struct policy_handle *_phNotify /* [in,out] [ref] */,
+							uint32_t *_pfApcFired /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_CloseNotifyHandle_recv(struct tevent_req *req,
+					      TALLOC_CTX *mem_ctx,
+					      WERROR *result);
+NTSTATUS dcerpc_svcctl_CloseNotifyHandle(struct dcerpc_binding_handle *h,
+					 TALLOC_CTX *mem_ctx,
+					 struct policy_handle *_phNotify /* [in,out] [ref] */,
+					 uint32_t *_pfApcFired /* [out] [ref] */,
+					 WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_ControlServiceExA_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_ControlServiceExA *r);
+NTSTATUS dcerpc_svcctl_ControlServiceExA_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_ControlServiceExA_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_ControlServiceExA *r);
+struct tevent_req *dcerpc_svcctl_ControlServiceExA_send(TALLOC_CTX *mem_ctx,
+							struct tevent_context *ev,
+							struct dcerpc_binding_handle *h,
+							struct policy_handle _hService /* [in]  */,
+							enum SERVICE_CONTROL _dwControl /* [in]  */,
+							uint32_t _dwInfoLevel /* [in]  */,
+							union SC_RPC_SERVICE_CONTROL_IN_PARAMSA *_pControlInParams /* [in] [ref,switch_is(dwInfoLevel)] */,
+							union SC_RPC_SERVICE_CONTROL_OUT_PARAMSA *_pControlOutParams /* [out] [ref,switch_is(dwInfoLevel)] */);
+NTSTATUS dcerpc_svcctl_ControlServiceExA_recv(struct tevent_req *req,
+					      TALLOC_CTX *mem_ctx,
+					      WERROR *result);
+NTSTATUS dcerpc_svcctl_ControlServiceExA(struct dcerpc_binding_handle *h,
+					 TALLOC_CTX *mem_ctx,
+					 struct policy_handle _hService /* [in]  */,
+					 enum SERVICE_CONTROL _dwControl /* [in]  */,
+					 uint32_t _dwInfoLevel /* [in]  */,
+					 union SC_RPC_SERVICE_CONTROL_IN_PARAMSA *_pControlInParams /* [in] [ref,switch_is(dwInfoLevel)] */,
+					 union SC_RPC_SERVICE_CONTROL_OUT_PARAMSA *_pControlOutParams /* [out] [ref,switch_is(dwInfoLevel)] */,
+					 WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_ControlServiceExW_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_ControlServiceExW *r);
+NTSTATUS dcerpc_svcctl_ControlServiceExW_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_ControlServiceExW_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_ControlServiceExW *r);
+struct tevent_req *dcerpc_svcctl_ControlServiceExW_send(TALLOC_CTX *mem_ctx,
+							struct tevent_context *ev,
+							struct dcerpc_binding_handle *h,
+							struct policy_handle _hService /* [in]  */,
+							enum SERVICE_CONTROL _dwControl /* [in]  */,
+							uint32_t _dwInfoLevel /* [in]  */,
+							union SC_RPC_SERVICE_CONTROL_IN_PARAMSW *_pControlInParams /* [in] [ref,switch_is(dwInfoLevel)] */,
+							union SC_RPC_SERVICE_CONTROL_OUT_PARAMSW *_pControlOutParams /* [out] [ref,switch_is(dwInfoLevel)] */);
+NTSTATUS dcerpc_svcctl_ControlServiceExW_recv(struct tevent_req *req,
+					      TALLOC_CTX *mem_ctx,
+					      WERROR *result);
+NTSTATUS dcerpc_svcctl_ControlServiceExW(struct dcerpc_binding_handle *h,
+					 TALLOC_CTX *mem_ctx,
+					 struct policy_handle _hService /* [in]  */,
+					 enum SERVICE_CONTROL _dwControl /* [in]  */,
+					 uint32_t _dwInfoLevel /* [in]  */,
+					 union SC_RPC_SERVICE_CONTROL_IN_PARAMSW *_pControlInParams /* [in] [ref,switch_is(dwInfoLevel)] */,
+					 union SC_RPC_SERVICE_CONTROL_OUT_PARAMSW *_pControlOutParams /* [out] [ref,switch_is(dwInfoLevel)] */,
+					 WERROR *result);
+
+struct tevent_req *dcerpc_Opnum52NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum52NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum52NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum52NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum52NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum52NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum52NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum52NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_Opnum53NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum53NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum53NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum53NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum53NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum53NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum53NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum53NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_Opnum54NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum54NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum54NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum54NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum54NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum54NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum54NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum54NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_Opnum55NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum55NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum55NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum55NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum55NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum55NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum55NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum55NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_svcctl_QueryServiceConfigEx_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_QueryServiceConfigEx *r);
+NTSTATUS dcerpc_svcctl_QueryServiceConfigEx_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_QueryServiceConfigEx_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_QueryServiceConfigEx *r);
+struct tevent_req *dcerpc_svcctl_QueryServiceConfigEx_send(TALLOC_CTX *mem_ctx,
+							   struct tevent_context *ev,
+							   struct dcerpc_binding_handle *h,
+							   struct policy_handle _hService /* [in]  */,
+							   uint32_t _dwInfoLevel /* [in]  */,
+							   struct SC_RPC_CONFIG_INFOW *_pInfo /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_QueryServiceConfigEx_recv(struct tevent_req *req,
+						 TALLOC_CTX *mem_ctx,
+						 WERROR *result);
+NTSTATUS dcerpc_svcctl_QueryServiceConfigEx(struct dcerpc_binding_handle *h,
+					    TALLOC_CTX *mem_ctx,
+					    struct policy_handle _hService /* [in]  */,
+					    uint32_t _dwInfoLevel /* [in]  */,
+					    struct SC_RPC_CONFIG_INFOW *_pInfo /* [out] [ref] */,
+					    WERROR *result);
+
+struct tevent_req *dcerpc_Opnum57NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum57NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum57NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum57NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum57NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum57NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum57NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum57NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_Opnum58NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum58NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum58NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum58NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum58NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum58NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum58NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum58NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_Opnum59NotUsedOnWire_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct Opnum59NotUsedOnWire *r);
+NTSTATUS dcerpc_Opnum59NotUsedOnWire_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum59NotUsedOnWire_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct Opnum59NotUsedOnWire *r);
+struct tevent_req *dcerpc_Opnum59NotUsedOnWire_send(TALLOC_CTX *mem_ctx,
+						    struct tevent_context *ev,
+						    struct dcerpc_binding_handle *h);
+NTSTATUS dcerpc_Opnum59NotUsedOnWire_recv(struct tevent_req *req,
+					  TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_Opnum59NotUsedOnWire(struct dcerpc_binding_handle *h,
+				     TALLOC_CTX *mem_ctx);
+
+struct tevent_req *dcerpc_svcctl_CreateWowService_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_CreateWowService *r);
+NTSTATUS dcerpc_svcctl_CreateWowService_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_CreateWowService_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_CreateWowService *r);
+struct tevent_req *dcerpc_svcctl_CreateWowService_send(TALLOC_CTX *mem_ctx,
+						       struct tevent_context *ev,
+						       struct dcerpc_binding_handle *h,
+						       struct policy_handle _hSCManager /* [in]  */,
+						       const char *_lpServiceName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */,
+						       const char *_lpDisplayName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+						       uint32_t _dwDesiredAccess /* [in]  */,
+						       uint32_t _dwServiceType /* [in]  */,
+						       uint32_t _dwStartType /* [in]  */,
+						       uint32_t _dwErrorControl /* [in]  */,
+						       const char *_lpBinaryPathName /* [in] [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */,
+						       const char *_lpLoadOrderGroup /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+						       uint32_t *_lpdwTagId /* [in,out] [unique] */,
+						       uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+						       uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+						       const char *_lpServiceStartName /* [in] [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+						       uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+						       uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+						       uint16_t _dwServiceWowType /* [in]  */,
+						       struct policy_handle *_lpServiceHandle /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_CreateWowService_recv(struct tevent_req *req,
+					     TALLOC_CTX *mem_ctx,
+					     WERROR *result);
+NTSTATUS dcerpc_svcctl_CreateWowService(struct dcerpc_binding_handle *h,
+					TALLOC_CTX *mem_ctx,
+					struct policy_handle _hSCManager /* [in]  */,
+					const char *_lpServiceName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),ref] */,
+					const char *_lpDisplayName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					uint32_t _dwDesiredAccess /* [in]  */,
+					uint32_t _dwServiceType /* [in]  */,
+					uint32_t _dwStartType /* [in]  */,
+					uint32_t _dwErrorControl /* [in]  */,
+					const char *_lpBinaryPathName /* [in] [charset(UTF16),range(0,SC_MAX_PATH_LENGTH),ref] */,
+					const char *_lpLoadOrderGroup /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+					uint32_t *_lpdwTagId /* [in,out] [unique] */,
+					uint8_t *_lpDependencies /* [in] [size_is(dwDependSize),unique] */,
+					uint32_t _dwDependSize /* [in] [range(0,SC_MAX_DEPEND_SIZE)] */,
+					const char *_lpServiceStartName /* [in] [charset(UTF16),range(0,SC_MAX_ACCOUNT_NAME_LENGTH),unique] */,
+					uint8_t *_lpPassword /* [in] [size_is(dwPwSize),unique] */,
+					uint32_t _dwPwSize /* [in] [range(0,SC_MAX_PWD_SIZE)] */,
+					uint16_t _dwServiceWowType /* [in]  */,
+					struct policy_handle *_lpServiceHandle /* [out] [ref] */,
+					WERROR *result);
+
+struct tevent_req *dcerpc_svcctl_OpenSCManager2_r_send(TALLOC_CTX *mem_ctx,
+	struct tevent_context *ev,
+	struct dcerpc_binding_handle *h,
+	struct svcctl_OpenSCManager2 *r);
+NTSTATUS dcerpc_svcctl_OpenSCManager2_r_recv(struct tevent_req *req, TALLOC_CTX *mem_ctx);
+NTSTATUS dcerpc_svcctl_OpenSCManager2_r(struct dcerpc_binding_handle *h, TALLOC_CTX *mem_ctx, struct svcctl_OpenSCManager2 *r);
+struct tevent_req *dcerpc_svcctl_OpenSCManager2_send(TALLOC_CTX *mem_ctx,
 						     struct tevent_context *ev,
 						     struct dcerpc_binding_handle *h,
-						     struct policy_handle *_scmanager /* [in] [ref] */,
-						     uint32_t _info_level /* [in]  */,
-						     uint32_t _type /* [in]  */,
-						     enum svcctl_ServiceState _state /* [in]  */,
-						     uint8_t *_services /* [out] [ref,size_is(offered)] */,
-						     uint32_t _offered /* [in] [range(0,0x40000)] */,
-						     uint32_t *_needed /* [out] [range(0,0x40000),ref] */,
-						     uint32_t *_service_returned /* [out] [range(0,0x40000),ref] */,
-						     uint32_t *_resume_handle /* [in,out] [range(0,0x40000),unique] */,
-						     const char *_group_name /* [in] [charset(UTF16),unique] */);
-NTSTATUS dcerpc_EnumServicesStatusExW_recv(struct tevent_req *req,
+						     struct policy_handle _BindingHandle /* [in]  */,
+						     const char *_DatabaseName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+						     uint32_t _DesiredAccess /* [in]  */,
+						     struct policy_handle *_ScmHandle /* [out] [ref] */);
+NTSTATUS dcerpc_svcctl_OpenSCManager2_recv(struct tevent_req *req,
 					   TALLOC_CTX *mem_ctx,
 					   WERROR *result);
-NTSTATUS dcerpc_EnumServicesStatusExW(struct dcerpc_binding_handle *h,
+NTSTATUS dcerpc_svcctl_OpenSCManager2(struct dcerpc_binding_handle *h,
 				      TALLOC_CTX *mem_ctx,
-				      struct policy_handle *_scmanager /* [in] [ref] */,
-				      uint32_t _info_level /* [in]  */,
-				      uint32_t _type /* [in]  */,
-				      enum svcctl_ServiceState _state /* [in]  */,
-				      uint8_t *_services /* [out] [ref,size_is(offered)] */,
-				      uint32_t _offered /* [in] [range(0,0x40000)] */,
-				      uint32_t *_needed /* [out] [range(0,0x40000),ref] */,
-				      uint32_t *_service_returned /* [out] [range(0,0x40000),ref] */,
-				      uint32_t *_resume_handle /* [in,out] [range(0,0x40000),unique] */,
-				      const char *_group_name /* [in] [charset(UTF16),unique] */,
+				      struct policy_handle _BindingHandle /* [in]  */,
+				      const char *_DatabaseName /* [in] [charset(UTF16),range(0,SC_MAX_NAME_LENGTH),unique] */,
+				      uint32_t _DesiredAccess /* [in]  */,
+				      struct policy_handle *_ScmHandle /* [out] [ref] */,
 				      WERROR *result);
 
 #endif /* _HEADER_RPC_svcctl */
