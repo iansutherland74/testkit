@@ -24,3 +24,8 @@ target 'tvOS' do
   platform :tvos, 13.0
   common
 end
+target 'visionOS' do
+  project 'Demo.xcodeproj'
+  platform :visionos, 1.0
+  common
+end
